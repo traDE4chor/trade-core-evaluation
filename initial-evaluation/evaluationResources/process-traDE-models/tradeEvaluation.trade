@@ -1,0 +1,126 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<ns2:DataDependenceGraph xmlns:ns2="http://org.trade.models/ddg" targetNamespace="http://iaas.uni-stuttgart.de/tradeEvaluation/chor" name="TradeEvaluationChoreography_CDM">
+    <processors>
+        <processor name="Participant1" identifier="participant_Participant1">
+            <incoming/>
+            <outgoing/>
+            <type>participant</type>
+        </processor>
+        <processor name="receive" identifier="activity_e9a0cef8-bd96-488a-a6a6-b39ab1684a4c">
+            <incoming/>
+            <outgoing>
+                <edge>ddgEdge_1ee12325-8b11-4906-8742-4cffa7c276b9</edge>
+            </outgoing>
+            <parent>participant_Participant1</parent>
+            <type>activity</type>
+        </processor>
+        <processor name="Participant2" identifier="participant_Participant2">
+            <incoming/>
+            <outgoing/>
+            <type>participant</type>
+        </processor>
+        <processor name="activityA" identifier="activity_ccdd4472-96b2-4a2c-acd4-27739c241558">
+            <incoming>
+                <edge>ddgEdge_75308ec7-5637-4855-8aad-e8a61e1d2256</edge>
+            </incoming>
+            <outgoing>
+                <edge>ddgEdge_894f737b-4364-465d-a802-b9891e1689d4</edge>
+            </outgoing>
+            <parent>participant_Participant2</parent>
+            <type>activity</type>
+        </processor>
+        <processor name="Participant3" identifier="participant_Participant3">
+            <incoming/>
+            <outgoing/>
+            <type>participant</type>
+        </processor>
+        <processor name="activityB" identifier="activity_29da6976-f9a5-4f24-9c9c-9a2c29595a20">
+            <incoming>
+                <edge>ddgEdge_87c1e0f7-f9f0-4bd9-b2b3-5a82b955b386</edge>
+            </incoming>
+            <outgoing>
+                <edge>ddgEdge_780a48f4-4388-45d9-89eb-3dc190abc06e</edge>
+            </outgoing>
+            <parent>participant_Participant3</parent>
+            <type>activity</type>
+        </processor>
+        <processor name="reply" identifier="activity_806a412d-0db1-4a9a-b956-ca1acdbc8a32">
+            <incoming>
+                <edge>ddgEdge_6f3d0a1e-d537-4659-82d0-5b18cf0ef253</edge>
+            </incoming>
+            <outgoing/>
+            <parent>participant_Participant1</parent>
+            <type>activity</type>
+        </processor>
+    </processors>
+    <dataObjects>
+        <dataObject useDataForCorrelation="false" name="input" identifier="dataObject_669c5a52-b0d6-4c84-9460-8f3af1b22309">
+            <incoming>
+                <edge>ddgEdge_1ee12325-8b11-4906-8742-4cffa7c276b9</edge>
+            </incoming>
+            <outgoing>
+                <edge>ddgEdge_75308ec7-5637-4855-8aad-e8a61e1d2256</edge>
+                <edge>ddgEdge_87c1e0f7-f9f0-4bd9-b2b3-5a82b955b386</edge>
+            </outgoing>
+            <dataElements>
+                <dataElement name="D" identifier="dataElement_7f98ab93-b127-461e-8065-47352236e8ea">
+                    <incoming/>
+                    <outgoing/>
+                    <type>string</type>
+                </dataElement>
+                <dataElement name="E" identifier="dataElement_a15385a1-2324-4358-b12b-a131d4375558">
+                    <incoming/>
+                    <outgoing/>
+                    <type>string</type>
+                </dataElement>
+            </dataElements>
+        </dataObject>
+        <dataObject useDataForCorrelation="false" name="output" identifier="dataObject_19f163fe-c9d4-4310-a58d-69d481ab3d67">
+            <incoming/>
+            <outgoing/>
+            <dataElements>
+                <dataElement name="F" identifier="dataElement_076943f0-ff09-46dd-a169-d15f8c8762cd">
+                    <incoming/>
+                    <outgoing/>
+                    <type>string</type>
+                </dataElement>
+                <dataElement name="G" identifier="dataElement_b6acd6db-d3ad-487f-8bb4-71b5dc0879c5">
+                    <incoming>
+                        <edge>ddgEdge_780a48f4-4388-45d9-89eb-3dc190abc06e</edge>
+                        <edge>ddgEdge_894f737b-4364-465d-a802-b9891e1689d4</edge>
+                    </incoming>
+                    <outgoing>
+                        <edge>ddgEdge_6f3d0a1e-d537-4659-82d0-5b18cf0ef253</edge>
+                    </outgoing>
+                    <type>string</type>
+                </dataElement>
+            </dataElements>
+        </dataObject>
+    </dataObjects>
+    <dependenceEdges>
+        <dependenceEdge type="VALUE" name="receive_input" identifier="ddgEdge_1ee12325-8b11-4906-8742-4cffa7c276b9">
+            <source>activity_e9a0cef8-bd96-488a-a6a6-b39ab1684a4c</source>
+            <target>dataObject_669c5a52-b0d6-4c84-9460-8f3af1b22309</target>
+        </dependenceEdge>
+        <dependenceEdge type="VALUE" name="input_activityA" identifier="ddgEdge_75308ec7-5637-4855-8aad-e8a61e1d2256">
+            <source>dataObject_669c5a52-b0d6-4c84-9460-8f3af1b22309</source>
+            <target>activity_ccdd4472-96b2-4a2c-acd4-27739c241558</target>
+        </dependenceEdge>
+        <dependenceEdge type="VALUE" name="input_activityB" identifier="ddgEdge_87c1e0f7-f9f0-4bd9-b2b3-5a82b955b386">
+            <source>dataObject_669c5a52-b0d6-4c84-9460-8f3af1b22309</source>
+            <target>activity_29da6976-f9a5-4f24-9c9c-9a2c29595a20</target>
+        </dependenceEdge>
+        <dependenceEdge type="VALUE" name="activityB_output" identifier="ddgEdge_780a48f4-4388-45d9-89eb-3dc190abc06e">
+            <source>activity_29da6976-f9a5-4f24-9c9c-9a2c29595a20</source>
+            <target>dataElement_b6acd6db-d3ad-487f-8bb4-71b5dc0879c5</target>
+        </dependenceEdge>
+        <dependenceEdge type="VALUE" name="activityA_output" identifier="ddgEdge_894f737b-4364-465d-a802-b9891e1689d4">
+            <source>activity_ccdd4472-96b2-4a2c-acd4-27739c241558</source>
+            <target>dataElement_b6acd6db-d3ad-487f-8bb4-71b5dc0879c5</target>
+        </dependenceEdge>
+        <dependenceEdge type="VALUE" name="output_reply" identifier="ddgEdge_6f3d0a1e-d537-4659-82d0-5b18cf0ef253">
+            <source>dataElement_b6acd6db-d3ad-487f-8bb4-71b5dc0879c5</source>
+            <target>activity_806a412d-0db1-4a9a-b956-ca1acdbc8a32</target>
+        </dependenceEdge>
+    </dependenceEdges>
+</ns2:DataDependenceGraph>

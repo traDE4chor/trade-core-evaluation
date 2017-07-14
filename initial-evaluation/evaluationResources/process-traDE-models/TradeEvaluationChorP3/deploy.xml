@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<deploy xmlns="http://www.apache.org/ode/schemas/dd/2007/03" xmlns:Participant2_TargetNameSpace="http://Participant2_TargetNameSpace" xmlns:Participant3_TargetNameSpace="http://Participant3_TargetNameSpace">
+  <process name="Participant3_TargetNameSpace:Participant3">
+    <metaData>
+      <mdProperty name="creationTime" value="1498034247291"/>
+    </metaData>
+    <active>true</active>
+    <retired>false</retired>
+    <process-events generate="all"/>
+    <provide partnerLink="Participant2-Participant3-realizedBy-P3PortType-pl">
+      <service name="Participant3_TargetNameSpace:Participant3-P3PortType-Service" port="Participant3-P3PortType-Port"/>
+    </provide>
+    <invoke partnerLink="Participant3-Participant2-realizedBy-P2CallbackPortType-pl">
+      <service name="Participant2_TargetNameSpace:Participant2-P2CallbackPortType-Service" port="Participant2-P2CallbackPortType-Port"/>
+      <binding name="Participant2_TargetNameSpace:Participant2-P2CallbackPortType-Binding"/>
+    </invoke>
+  </process>
+</deploy>

@@ -1,0 +1,141 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<bpel:process exitOnStandardFault="yes" name="Participant2"
+	targetNamespace="http://Participant2_TargetNameSpace"
+	xmlns:bpel="http://docs.oasis-open.org/wsbpel/2.0/process/executable"
+	xmlns:p2="http://Participant2_TargetNameSpace" xmlns:p3="http://Participant3_TargetNameSpace"
+	xmlns:p1="http://Participant1_TargetNameSpace" xmlns:trade="http://iaas.uni-stuttgart.de/trade/annotations"
+	xmlns:wsu="http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-wssecurity-utility-1.0.xsd"
+	xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+	<bpel:correlationSets>
+		<bpel:correlationSet name="CorrelationSet" properties="p2:correlationID"></bpel:correlationSet>
+	</bpel:correlationSets>
+	<trade:tradeAssociation>
+		<trade:dataModelRef dataModelName="TradeEvaluationChoreography_CDM"
+			dataModelNamespace="http://iaas.uni-stuttgart.de/tradeEvaluation/chor" />
+	</trade:tradeAssociation>
+	<bpel:import importType="http://schemas.xmlsoap.org/wsdl/"
+		location="Participant2Artifacts.wsdl" namespace="http://Participant2_TargetNameSpace" />
+	<bpel:import importType="http://schemas.xmlsoap.org/wsdl/"
+		location="Participant3Artifacts.wsdl" namespace="http://Participant3_TargetNameSpace" />
+	<bpel:import importType="http://schemas.xmlsoap.org/wsdl/"
+		location="Participant1Artifacts.wsdl" namespace="http://Participant1_TargetNameSpace" />
+	<bpel:partnerLinks>
+		<bpel:partnerLink myRole="Participant2Provider"
+			name="Participant1-Participant2-realizedBy-P2PortType-pl"
+			partnerLinkType="p2:Participant1-Participant2-realizedBy-P2PortType-plt" />
+		<bpel:partnerLink name="Participant2-Participant3-realizedBy-P3PortType-pl"
+			partnerLinkType="p3:Participant2-Participant3-realizedBy-P3PortType-plt"
+			partnerRole="Participant3Provider" />
+		<bpel:partnerLink myRole="Participant2Provider"
+			name="Participant3-Participant2-realizedBy-P2CallbackPortType-pl"
+			partnerLinkType="p2:Participant3-Participant2-realizedBy-P2CallbackPortType-plt" />
+		<bpel:partnerLink
+			name="Participant2-Participant1-realizedBy-P1CallbackPortType-pl"
+			partnerLinkType="p1:Participant2-Participant1-realizedBy-P1CallbackPortType-plt"
+			partnerRole="Participant1Provider" />
+	</bpel:partnerLinks>
+	<bpel:variables>
+		<bpel:variable name="D" type="xsd:string">
+			<trade:tradeAssociation>
+				<trade:dataObjectRef correlationSet="CorrelationSet"
+					dataElementName="D" dataObjectName="input" />
+			</trade:tradeAssociation>
+		</bpel:variable>
+		<bpel:variable name="F" type="xsd:string">
+			<trade:tradeAssociation>
+				<trade:dataObjectRef correlationSet="CorrelationSet"
+					dataElementName="F" dataObjectName="output" />
+			</trade:tradeAssociation>
+		</bpel:variable>
+		<bpel:variable messageType="p2:P2RequestMessage"
+			name="P2RequestMessage-InputVariable" />
+		<bpel:variable messageType="p3:P3RequestMessage"
+			name="P3RequestMessage-InputVariable" />
+		<bpel:variable messageType="p2:P2CallbackMessage"
+			name="P2CallbackMessage-InputVariable" />
+		<bpel:variable messageType="p1:P1CallbackMessage"
+			name="P1CallbackMessage-InputVariable" />
+	</bpel:variables>
+	<bpel:sequence name="main">
+		<bpel:receive createInstance="yes" name="receive"
+			operation="process" partnerLink="Participant1-Participant2-realizedBy-P2PortType-pl"
+			portType="p2:P2PortType" variable="P2RequestMessage-InputVariable" >
+            <bpel:correlations>
+                <bpel:correlation set="CorrelationSet" initiate="yes"></bpel:correlation>
+            </bpel:correlations>
+        </bpel:receive>
+        <bpel:assign validate="no" name="Assign">
+            <bpel:copy>
+                <bpel:from><bpel:literal><tns:P3RequestMessage-RequestElement xmlns:tns="http://Participant3_TargetNameSpace" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <tns:correlationID>tns:correlationID</tns:correlationID>
+</tns:P3RequestMessage-RequestElement>
+</bpel:literal></bpel:from>
+                <bpel:to variable="P3RequestMessage-InputVariable" part="payload"></bpel:to>
+            </bpel:copy>
+            <bpel:copy>
+                <bpel:from part="payload" variable="P2RequestMessage-InputVariable">
+                    <bpel:query queryLanguage="urn:oasis:names:tc:wsbpel:2.0:sublang:xpath1.0"><![CDATA[p2:correlationID]]></bpel:query>
+                </bpel:from>
+                <bpel:to part="payload" variable="P3RequestMessage-InputVariable">
+                    <bpel:query queryLanguage="urn:oasis:names:tc:wsbpel:2.0:sublang:xpath1.0"><![CDATA[p3:correlationID]]></bpel:query>
+                </bpel:to>
+            </bpel:copy>
+        </bpel:assign>
+        <bpel:invoke inputVariable="P3RequestMessage-InputVariable"
+			name="invokeP3" operation="process"
+			partnerLink="Participant2-Participant3-realizedBy-P3PortType-pl"
+			portType="p3:P3PortType" >
+            <bpel:correlations>
+                <bpel:correlation set="CorrelationSet" initiate="no"></bpel:correlation>
+            </bpel:correlations>
+        </bpel:invoke>
+		
+
+        <bpel:assign validate="no" name="activityA">
+            <bpel:copy>
+                <bpel:from>
+                    
+                    
+                    
+                    
+                    <![CDATA[concat($D,$D)]]>
+                </bpel:from>
+                <bpel:to variable="F"></bpel:to>
+            </bpel:copy>
+        </bpel:assign>
+        <bpel:receive name="receiveResponseP3" operation="callback"
+			partnerLink="Participant3-Participant2-realizedBy-P2CallbackPortType-pl"
+			portType="p2:P2CallbackPortType" variable="P2CallbackMessage-InputVariable" >
+            <bpel:correlations>
+                <bpel:correlation set="CorrelationSet" initiate="no"></bpel:correlation>
+            </bpel:correlations>
+        </bpel:receive>
+        <bpel:assign validate="no" name="Assign1">
+            <bpel:copy>
+                <bpel:from><bpel:literal><tns:P1CallbackMessage-RequestElement xmlns:tns="http://Participant1_TargetNameSpace" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <tns:correlationID>tns:correlationID</tns:correlationID>
+</tns:P1CallbackMessage-RequestElement>
+</bpel:literal></bpel:from>
+                <bpel:to variable="P1CallbackMessage-InputVariable" part="payload"></bpel:to>
+            </bpel:copy>
+            <bpel:copy>
+                <bpel:from part="payload" variable="P2CallbackMessage-InputVariable">
+                    <bpel:query queryLanguage="urn:oasis:names:tc:wsbpel:2.0:sublang:xpath1.0">
+                        <![CDATA[p2:correlationID]]>
+                    </bpel:query>
+                </bpel:from>
+                <bpel:to part="payload" variable="P1CallbackMessage-InputVariable">
+                    <bpel:query queryLanguage="urn:oasis:names:tc:wsbpel:2.0:sublang:xpath1.0"><![CDATA[p1:correlationID]]></bpel:query>
+                </bpel:to>
+            </bpel:copy>
+        </bpel:assign>
+        <bpel:invoke inputVariable="P1CallbackMessage-InputVariable"
+			name="sendResponseP1" operation="callback"
+			partnerLink="Participant2-Participant1-realizedBy-P1CallbackPortType-pl"
+			portType="p1:P1CallbackPortType" >
+            <bpel:correlations>
+                <bpel:correlation set="CorrelationSet" initiate="no"></bpel:correlation>
+            </bpel:correlations>
+        </bpel:invoke>
+	</bpel:sequence>
+</bpel:process>

@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<wsdl:definitions xmlns:plnk="http://docs.oasis-open.org/wsbpel/2.0/plnktype" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:tns="http://Participant3_TargetNameSpace" xmlns:vprop="http://docs.oasis-open.org/wsbpel/2.0/varprop" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsd1="http://Participant2_TargetNameSpace" xmlns:xsd2="http://Participant1_TargetNameSpace" name="Participant3Artifacts" targetNamespace="http://Participant3_TargetNameSpace">
+	<plnk:partnerLinkType name="Participant2-Participant3-realizedBy-P3PortType-plt">
+		<plnk:role name="Participant3Provider" portType="tns:P3PortType"/>
+	</plnk:partnerLinkType>
+    <vprop:property name="correlationID" type="xsd:string"/>
+    <vprop:propertyAlias messageType="xsd1:P2CallbackMessage" part="payload" propertyName="tns:correlationID">
+    <vprop:query><![CDATA[/xsd1:correlationID]]></vprop:query>
+  </vprop:propertyAlias>
+    <vprop:propertyAlias messageType="tns:P3RequestMessage" part="payload" propertyName="tns:correlationID">
+    <vprop:query><![CDATA[/tns:correlationID]]></vprop:query>
+  </vprop:propertyAlias>
+    <wsdl:import location="Participant2Artifacts.wsdl" namespace="http://Participant2_TargetNameSpace"/>
+    <wsdl:types>
+		<xsd:schema attributeFormDefault="unqualified" elementFormDefault="qualified" targetNamespace="http://Participant3_TargetNameSpace">
+			<xsd:element name="P3RequestMessage-RequestElement" type="tns:tP3RequestMessage-RequestElementType"/>
+			<xsd:complexType name="tP3RequestMessage-RequestElementType">
+				<xsd:sequence>
+					<xsd:element name="correlationID" type="xsd:string"/>
+					<xsd:element name="dataE" type="xsd:string"/>
+				</xsd:sequence>
+			</xsd:complexType>
+		</xsd:schema>
+	</wsdl:types>
+	<wsdl:message name="P3RequestMessage">
+		<wsdl:part element="tns:P3RequestMessage-RequestElement" name="payload"/>
+	</wsdl:message>
+	<wsdl:portType name="P3PortType">
+		<wsdl:operation name="process">
+			<wsdl:input message="tns:P3RequestMessage"/>
+		</wsdl:operation>
+	</wsdl:portType>
+	<wsdl:binding name="Participant3-P3PortType-Binding" type="tns:P3PortType">
+
+		<soap:binding style="document" transport="http://schemas.xmlsoap.org/soap/http"/>
+		<wsdl:operation name="process">
+
+			<soap:operation soapAction="http://Participant3_TargetNameSpace/process"/>
+			<wsdl:input>
+
+				<soap:body use="literal"/>
+			</wsdl:input>
+		</wsdl:operation>
+	</wsdl:binding>
+	<wsdl:service name="Participant3-P3PortType-Service">
+		<wsdl:port binding="tns:Participant3-P3PortType-Binding" name="Participant3-P3PortType-Port">
+			<soap:address location="http://[Host-IP-of-evaluation-environment]:32002/ode/processes/Participant3-P3PortType-Service"/>
+		</wsdl:port>
+	</wsdl:service>
+</wsdl:definitions>

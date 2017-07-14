@@ -1,0 +1,136 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<wsdl:definitions xmlns:plnk="http://docs.oasis-open.org/wsbpel/2.0/plnktype"
+	xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:tns="http://Participant1_TargetNameSpace"
+	xmlns:vprop="http://docs.oasis-open.org/wsbpel/2.0/varprop" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/"
+	xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsd1="http://Participant2_TargetNameSpace"
+	name="Participant1Artifacts" targetNamespace="http://Participant1_TargetNameSpace">
+	<plnk:partnerLinkType
+		name="Participant2-Participant1-realizedBy-P1CallbackPortType-plt">
+		<plnk:role name="Participant1Provider" portType="tns:P1CallbackPortType" />
+	</plnk:partnerLinkType>
+	<plnk:partnerLinkType
+		name="client-Participant1-realizedBy-client-Participant1PortType-plt">
+		<plnk:role name="Participant1Provider" portType="tns:client-Participant1PortType" />
+	</plnk:partnerLinkType>
+	<vprop:property name="correlationID" type="xsd:string" />
+	<vprop:propertyAlias messageType="tns:client-Participant1RequestMessage"
+		part="payload" propertyName="tns:correlationID">
+		<vprop:query><![CDATA[/tns:correlationID]]></vprop:query>
+	</vprop:propertyAlias>
+	<vprop:propertyAlias messageType="tns:P1CallbackMessage"
+		part="payload" propertyName="tns:correlationID">
+		<vprop:query><![CDATA[/tns:correlationID]]></vprop:query>
+	</vprop:propertyAlias>
+	<vprop:propertyAlias messageType="tns:processResponse"
+		part="payload" propertyName="tns:correlationID">
+		<vprop:query><![CDATA[/tns:correlationID]]></vprop:query>
+	</vprop:propertyAlias>
+	<vprop:propertyAlias messageType="xsd1:P2RequestMessage"
+		part="payload" propertyName="tns:correlationID">
+		<vprop:query><![CDATA[/xsd1:correlationID]]></vprop:query>
+	</vprop:propertyAlias>
+	<wsdl:import location="Participant2Artifacts.wsdl"
+		namespace="http://Participant2_TargetNameSpace" />
+	<wsdl:types>
+		<xsd:schema attributeFormDefault="unqualified"
+			elementFormDefault="qualified" targetNamespace="http://Participant1_TargetNameSpace">
+			<xsd:element name="P1CallbackMessage-RequestElement"
+				type="tns:tP1CallbackMessage-RequestElementType" />
+			<xsd:complexType name="tP1CallbackMessage-RequestElementType">
+				<xsd:sequence>
+					<xsd:element name="correlationID" type="xsd:string" />
+					<xsd:element name="dataF" type="xsd:string">
+					</xsd:element>
+					<xsd:element name="dataG" type="xsd:string">
+					</xsd:element>
+				</xsd:sequence>
+			</xsd:complexType>
+			<xsd:element name="Participant1-client-Participant1PortType-Request"
+				type="tns:tClientRequestType" />
+			<xsd:complexType name="tClientRequestType">
+				<xsd:sequence>
+					<xsd:element name="correlationID" type="xsd:string" />
+					<xsd:element name="dataD" type="xsd:string" />
+					<xsd:element name="dataE" type="xsd:string" />
+				</xsd:sequence>
+			</xsd:complexType>
+			<xsd:element name="processResponse">
+				<xsd:complexType>
+					<xsd:sequence>
+
+						<xsd:element name="correlationID" type="xsd:string">
+						</xsd:element>
+						<xsd:element name="dataF" type="xsd:string">
+						</xsd:element>
+						<xsd:element name="dataG" type="xsd:string">
+						</xsd:element>
+					</xsd:sequence>
+				</xsd:complexType>
+			</xsd:element>
+		</xsd:schema>
+	</wsdl:types>
+	<wsdl:message name="P1CallbackMessage">
+		<wsdl:part element="tns:P1CallbackMessage-RequestElement"
+			name="payload" />
+	</wsdl:message>
+	<wsdl:message name="client-Participant1RequestMessage">
+		<wsdl:part element="tns:Participant1-client-Participant1PortType-Request"
+			name="payload" />
+	</wsdl:message>
+	<wsdl:message name="processResponse">
+		<wsdl:part element="tns:processResponse" name="payload" />
+	</wsdl:message>
+	<wsdl:portType name="P1CallbackPortType">
+		<wsdl:operation name="callback">
+			<wsdl:input message="tns:P1CallbackMessage" />
+		</wsdl:operation>
+	</wsdl:portType>
+	<wsdl:portType name="client-Participant1PortType">
+		<wsdl:operation name="process">
+			<wsdl:input message="tns:client-Participant1RequestMessage" />
+			<wsdl:output message="tns:processResponse" />
+		</wsdl:operation>
+	</wsdl:portType>
+	<wsdl:binding name="Participant1-P1CallbackPortType-Binding"
+		type="tns:P1CallbackPortType">
+		<soap:binding style="document"
+			transport="http://schemas.xmlsoap.org/soap/http" />
+		<wsdl:operation name="callback">
+			<soap:operation soapAction="http://Participant1_TargetNameSpace/callback" />
+			<wsdl:input>
+				<soap:body use="literal" />
+			</wsdl:input>
+		</wsdl:operation>
+	</wsdl:binding>
+	<wsdl:binding name="Participant1-client-Participant1PortType-Binding"
+		type="tns:client-Participant1PortType">
+
+		<soap:binding style="document"
+			transport="http://schemas.xmlsoap.org/soap/http" />
+		<wsdl:operation name="process">
+
+			<soap:operation soapAction="http://Participant1_TargetNameSpace/process" />
+			<wsdl:input>
+
+				<soap:body use="literal" />
+			</wsdl:input>
+			<wsdl:output>
+				<soap:body use="literal" />
+			</wsdl:output>
+		</wsdl:operation>
+	</wsdl:binding>
+	<wsdl:service name="Participant1-P1CallbackPortType-Service">
+		<wsdl:port binding="tns:Participant1-P1CallbackPortType-Binding"
+			name="Participant1-P1CallbackPortType-Port">
+			<soap:address
+				location="http://[Host-IP-of-evaluation-environment]:32000/ode/processes/Participant1-P1CallbackPortType-Service" />
+		</wsdl:port>
+	</wsdl:service>
+	<wsdl:service name="Participant1-client-Participant1PortType-Service">
+		<wsdl:port binding="tns:Participant1-client-Participant1PortType-Binding"
+			name="Participant1-client-Participant1PortType-Port">
+			<soap:address
+				location="http://[Host-IP-of-evaluation-environment]:32000/ode/processes/Participant1-client-Participant1PortType-Service" />
+		</wsdl:port>
+	</wsdl:service>
+</wsdl:definitions>

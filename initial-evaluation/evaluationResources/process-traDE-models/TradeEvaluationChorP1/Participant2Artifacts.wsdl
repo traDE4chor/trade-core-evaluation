@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<wsdl:definitions xmlns:plnk="http://docs.oasis-open.org/wsbpel/2.0/plnktype"
+	xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:tns="http://Participant2_TargetNameSpace"
+	xmlns:vprop="http://docs.oasis-open.org/wsbpel/2.0/varprop" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/"
+	xmlns:xsd="http://www.w3.org/2001/XMLSchema" name="Participant2Artifacts"
+	targetNamespace="http://Participant2_TargetNameSpace">
+	<plnk:partnerLinkType
+		name="Participant1-Participant2-realizedBy-P2PortType-plt">
+		<plnk:role name="Participant2Provider" portType="tns:P2PortType" />
+	</plnk:partnerLinkType>
+	<plnk:partnerLinkType
+		name="Participant3-Participant2-realizedBy-P2CallbackPortType-plt">
+		<plnk:role name="Participant2Provider" portType="tns:P2CallbackPortType" />
+	</plnk:partnerLinkType>
+	<wsdl:types>
+		<xsd:schema attributeFormDefault="unqualified"
+			elementFormDefault="qualified" targetNamespace="http://Participant2_TargetNameSpace">
+			<xsd:element name="P2RequestMessage-RequestElement"
+				type="tns:tP2RequestMessage-RequestElementType" />
+			<xsd:complexType name="tP2RequestMessage-RequestElementType">
+				<xsd:sequence>
+					<xsd:element name="correlationID" type="xsd:string" />
+				</xsd:sequence>
+			</xsd:complexType>
+			<xsd:element name="P2CallbackMessage-RequestElement"
+				type="tns:tP2CallbackMessage-RequestElementType" />
+			<xsd:complexType name="tP2CallbackMessage-RequestElementType">
+				<xsd:sequence>
+					<xsd:element name="correlationID" type="xsd:string"></xsd:element>
+				</xsd:sequence>
+			</xsd:complexType>
+		</xsd:schema>
+	</wsdl:types>
+	<wsdl:message name="P2RequestMessage">
+		<wsdl:part element="tns:P2RequestMessage-RequestElement"
+			name="payload" />
+	</wsdl:message>
+	<wsdl:message name="P2CallbackMessage">
+		<wsdl:part element="tns:P2CallbackMessage-RequestElement"
+			name="payload" />
+	</wsdl:message>
+	<wsdl:portType name="P2PortType">
+		<wsdl:operation name="process">
+			<wsdl:input message="tns:P2RequestMessage" />
+		</wsdl:operation>
+	</wsdl:portType>
+	<wsdl:portType name="P2CallbackPortType">
+		<wsdl:operation name="callback">
+			<wsdl:input message="tns:P2CallbackMessage" />
+		</wsdl:operation>
+	</wsdl:portType>
+	<wsdl:binding name="Participant2-P2PortType-Binding" type="tns:P2PortType">
+
+		<soap:binding style="document"
+			transport="http://schemas.xmlsoap.org/soap/http" />
+		<wsdl:operation name="process">
+
+			<soap:operation soapAction="http://Participant2_TargetNameSpace/process" />
+			<wsdl:input>
+
+				<soap:body use="literal" />
+			</wsdl:input>
+		</wsdl:operation>
+	</wsdl:binding>
+	<wsdl:binding name="Participant2-P2CallbackPortType-Binding"
+		type="tns:P2CallbackPortType">
+
+		<soap:binding style="document"
+			transport="http://schemas.xmlsoap.org/soap/http" />
+		<wsdl:operation name="callback">
+
+			<soap:operation soapAction="http://Participant2_TargetNameSpace/callback" />
+			<wsdl:input>
+
+				<soap:body use="literal" />
+			</wsdl:input>
+		</wsdl:operation>
+	</wsdl:binding>
+	<wsdl:service name="Participant2-P2PortType-Service">
+		<wsdl:port binding="tns:Participant2-P2PortType-Binding"
+			name="Participant2-P2PortType-Port">
+			<soap:address
+				location="http://[Host-IP-of-evaluation-environment]:32001/ode/processes/Participant2-P2PortType-Service" />
+		</wsdl:port>
+	</wsdl:service>
+	<wsdl:service name="Participant2-P2CallbackPortType-Service">
+		<wsdl:port binding="tns:Participant2-P2CallbackPortType-Binding"
+			name="Participant2-P2CallbackPortType-Port">
+			<soap:address
+				location="http://[Host-IP-of-evaluation-environment]:32001/ode/processes/Participant2-P2CallbackPortType-Service" />
+		</wsdl:port>
+	</wsdl:service>
+</wsdl:definitions>
