@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<wsdl:definitions xmlns:plnk="http://docs.oasis-open.org/wsbpel/2.0/plnktype" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:tns="http://iaas.uni-stuttgart.de/opalSimulation/opalCLUS" xmlns:vprop="http://docs.oasis-open.org/wsbpel/2.0/varprop" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/" xmlns:wsdl1="http://www.uni-stuttgart.de/iaas/serviceWrapper/opalCLUS/" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsd1="http://iaas.uni-stuttgart.de/opalSimulation/opalXYZR" name="OpalCLUS_ProcessArtifacts" targetNamespace="http://iaas.uni-stuttgart.de/opalSimulation/opalCLUS">
+	<plnk:partnerLinkType name="OpalMC_Process-OpalCLUS_Process-realizedBy-OpalCLUSPortType-plt">
+		<plnk:role name="OpalCLUS_ProcessProvider" portType="tns:OpalCLUSPortType"/>
+	</plnk:partnerLinkType>
+	<vprop:property name="simulationID" type="xsd:string"/>
+    <plnk:partnerLinkType name="wrapperClusPLT">
+    <plnk:role name="wrapper" portType="wsdl1:opalCLUS"/>
+  </plnk:partnerLinkType>
+    <plnk:partnerLinkType name="wrapperCallbackPLT">
+    <plnk:role name="callback" portType="wsdl1:opalCLUSCallback"/>
+  </plnk:partnerLinkType>
+    <vprop:propertyAlias messageType="wsdl1:callbackRequest" part="parameters" propertyName="tns:simulationID">
+    <vprop:query><![CDATA[/simulationIdentifier/value]]></vprop:query>
+  </vprop:propertyAlias>
+    <vprop:propertyAlias messageType="tns:message_3" part="payload" propertyName="tns:simulationID">
+    <vprop:query><![CDATA[/tns:simulationID]]></vprop:query>
+  </vprop:propertyAlias>
+    <vprop:propertyAlias messageType="xsd1:message_4" part="payload" propertyName="tns:simulationID">
+    <vprop:query><![CDATA[/xsd1:simulationID]]></vprop:query>
+  </vprop:propertyAlias>
+    <vprop:propertyAlias messageType="wsdl1:runOpalClusRequest" part="parameters" propertyName="tns:simulationID">
+    <vprop:query><![CDATA[/simulationIdentifier/value]]></vprop:query>
+  </vprop:propertyAlias>
+    <vprop:propertyAlias messageType="wsdl1:runOpalClusResponse" part="parameters" propertyName="tns:simulationID">
+    <vprop:query><![CDATA[/simulationID]]></vprop:query>
+  </vprop:propertyAlias>
+    <wsdl:import location="opalCLUS.wsdl" namespace="http://www.uni-stuttgart.de/iaas/serviceWrapper/opalCLUS/"/>
+    <wsdl:import location="OpalXYZR_ProcessArtifacts.wsdl" namespace="http://iaas.uni-stuttgart.de/opalSimulation/opalXYZR"/>
+    <wsdl:types>
+		<xsd:schema attributeFormDefault="unqualified" elementFormDefault="qualified" targetNamespace="http://iaas.uni-stuttgart.de/opalSimulation/opalCLUS">
+			<xsd:element name="message_3-RequestElement" type="tns:tmessage_3-RequestElementType"/>
+			<xsd:complexType name="tmessage_3-RequestElementType">
+				<xsd:sequence>
+					<xsd:element name="simulationID" type="xsd:string"/>
+					<xsd:element name="opalMcProcessCallbackAddress" type="xsd:string"/>
+					<xsd:element name="numberOfSnapshotToProcess" type="xsd:int"/>
+				</xsd:sequence>
+			</xsd:complexType>
+		</xsd:schema>
+	</wsdl:types>
+	<wsdl:message name="message_3">
+		<wsdl:part element="tns:message_3-RequestElement" name="payload"/>
+	</wsdl:message>
+	<wsdl:portType name="OpalCLUSPortType">
+		<wsdl:operation name="identifyClusters">
+			<wsdl:input message="tns:message_3"/>
+		</wsdl:operation>
+	</wsdl:portType>
+	<wsdl:binding name="OpalCLUS_Process-OpalCLUSPortType-Binding" type="tns:OpalCLUSPortType">
+		<soap:binding style="document" transport="http://schemas.xmlsoap.org/soap/http"/>
+		<wsdl:operation name="identifyClusters">
+			<soap:operation soapAction="http://iaas.uni-stuttgart.de/opalSimulation/opalCLUS/identifyClusters"/>
+			<wsdl:input>
+				<soap:body use="literal"/>
+			</wsdl:input>
+		</wsdl:operation>
+	</wsdl:binding>
+	<wsdl:service name="OpalCLUS_Process-OpalCLUSPortType-Service">
+		<wsdl:port binding="tns:OpalCLUS_Process-OpalCLUSPortType-Binding" name="OpalCLUS_Process-OpalCLUSPortType-Port">
+			<soap:address location="http://ode:8080/ode/processes/OpalCLUS_Process-OpalCLUSPortType-Service"/>
+		</wsdl:port>
+	</wsdl:service>
+</wsdl:definitions>

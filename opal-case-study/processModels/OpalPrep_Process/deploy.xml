@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<deploy xmlns="http://www.apache.org/ode/schemas/dd/2007/03" xmlns:callback="http://www.uni-stuttgart.de/iaas/serviceWrapper/opal/callback" xmlns:opalMC="http://iaas.uni-stuttgart.de/opalSimulation/opalMC" xmlns:opalMC_1="http://www.uni-stuttgart.de/iaas/serviceWrapper/opalMC/" xmlns:opalPrep="http://iaas.uni-stuttgart.de/opalSimulation/opalPrep">
+  <process name="opalPrep:OpalPrep_Process">
+    <metaData>
+      <mdProperty name="version" value="1"/>
+    </metaData>
+    <active>true</active>
+    <retired>false</retired>
+    <process-events generate="all"/>
+    <provide partnerLink="processPL">
+      <service name="opalPrep:OpalPrepService" port="OpalPrepPort"/>
+    </provide>
+    <provide partnerLink="wrapperCallbackPL">
+      <service name="opalMC_1:OpalMCPrepareCallbackService" port="OpalMCPrepareCallbackServicePort"/>
+    </provide>
+    <invoke partnerLink="OpalPrep_Process-OpalMC_Process-realizedBy-OpalMCPortType-pl">
+      <service name="opalMC:OpalMC_Process-OpalMCPortType-Service" port="OpalMC_Process-OpalMCPortType-Port"/>
+    </invoke>
+    <invoke partnerLink="opalMcWrapperServicePL">
+      <service name="opalMC_1:OpalMCService" port="OpalMCServicePort"/>
+    </invoke>
+  </process>
+</deploy>

@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<wsdl:definitions xmlns:plnk="http://docs.oasis-open.org/wsbpel/2.0/plnktype" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:tns="http://iaas.uni-stuttgart.de/opalSimulation/opalPrep" xmlns:vprop="http://docs.oasis-open.org/wsbpel/2.0/varprop" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/" xmlns:wsdl1="http://www.uni-stuttgart.de/iaas/serviceWrapper/opalMC/" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsd1="http://iaas.uni-stuttgart.de/opalSimulation/opalMC" name="OpalPrep_ProcessArtifacts" targetNamespace="http://iaas.uni-stuttgart.de/opalSimulation/opalPrep">
+    <plnk:partnerLinkType name="opalPrepProcessPLT">
+    <plnk:role name="process" portType="tns:OpalPrepPortType"/>
+  </plnk:partnerLinkType>
+    <vprop:property name="simulationID" type="xsd:string"/>
+    <vprop:propertyAlias messageType="tns:prepareNewOpalSimulationRequest" part="parameters" propertyName="tns:simulationID">
+        <vprop:query><![CDATA[/simulationID]]></vprop:query>
+    </vprop:propertyAlias>
+    <plnk:partnerLinkType name="mcWrapperPLT">
+    <plnk:role name="mcService" portType="wsdl1:opalMC"/>
+  </plnk:partnerLinkType>
+    <plnk:partnerLinkType name="wrapperCallbackPLT">
+    <plnk:role name="callback" portType="wsdl1:opalMCPrepareCallback"/>
+  </plnk:partnerLinkType>
+    <vprop:propertyAlias messageType="wsdl1:callbackRequest" part="parameters" propertyName="tns:simulationID">
+    <vprop:query><![CDATA[/simulationIdentifier/value]]></vprop:query>
+  </vprop:propertyAlias>
+    <vprop:propertyAlias messageType="xsd1:message_5" part="payload" propertyName="tns:simulationID">
+    <vprop:query><![CDATA[/xsd1:simulationID]]></vprop:query>
+  </vprop:propertyAlias>
+    <vprop:propertyAlias messageType="xsd1:message_6" part="payload" propertyName="tns:simulationID">
+    <vprop:query><![CDATA[/xsd1:simulationID]]></vprop:query>
+  </vprop:propertyAlias>
+    <vprop:propertyAlias messageType="wsdl1:prepareOpalMCInputsRequest" part="parameters" propertyName="tns:simulationID">
+    <vprop:query><![CDATA[/simulationIdentifier/value]]></vprop:query>
+  </vprop:propertyAlias>
+    <vprop:propertyAlias messageType="wsdl1:prepareOpalMCInputsResponse" part="parameters" propertyName="tns:simulationID">
+    <vprop:query><![CDATA[/simulationID]]></vprop:query>
+  </vprop:propertyAlias>
+    <vprop:propertyAlias messageType="wsdl1:runOpalMCRequest" part="parameters" propertyName="tns:simulationID">
+    <vprop:query><![CDATA[/simulationIdentifier/value]]></vprop:query>
+  </vprop:propertyAlias>
+    <vprop:propertyAlias messageType="wsdl1:runOpalMCResponse" part="parameters" propertyName="tns:simulationID">
+    <vprop:query><![CDATA[/simulationID]]></vprop:query>
+  </vprop:propertyAlias>
+    <wsdl:import location="opalMC.wsdl" namespace="http://www.uni-stuttgart.de/iaas/serviceWrapper/opalMC/"/>
+    <wsdl:import location="OpalMC_ProcessArtifacts.wsdl" namespace="http://iaas.uni-stuttgart.de/opalSimulation/opalMC"/>
+    <wsdl:types>
+    <xsd:schema targetNamespace="http://iaas.uni-stuttgart.de/opalSimulation/opalPrep">
+	<xsd:element name="prepareNewOpalSimulation">
+		<xsd:complexType>
+			<xsd:sequence>
+				<xsd:element name="simulationID" type="xsd:string"/>
+				<xsd:element name="numberOfSnapshots" type="xsd:int"/>
+				<xsd:element name="snapshotFrequency" type="xsd:int"/>
+				<xsd:element name="checkpointFrequency" type="xsd:int"/>
+				<xsd:element name="lx" type="xsd:int"/>
+				<xsd:element name="ly" type="xsd:int"/>
+				<xsd:element name="lz" type="xsd:int"/>
+				<xsd:element name="Nb" type="xsd:int"/>
+				<xsd:element name="Nc" type="xsd:int"/>
+				<xsd:element name="Nd" type="xsd:int"/>
+				<xsd:element name="refToLattice" type="xsd:string"/>
+				<xsd:element name="refToEnergy" type="xsd:string"/>
+			</xsd:sequence>
+		</xsd:complexType>
+	</xsd:element>
+</xsd:schema>
+  </wsdl:types>
+    <wsdl:message name="prepareNewOpalSimulationRequest">
+		<wsdl:part element="tns:prepareNewOpalSimulation" name="parameters"/>
+	</wsdl:message>
+    <wsdl:portType name="OpalPrepPortType">
+    	<wsdl:operation name="prepareNewOpalSimulation">
+    		<wsdl:input message="tns:prepareNewOpalSimulationRequest"/>
+
+    	</wsdl:operation>
+    </wsdl:portType>
+    <wsdl:binding name="OpalPrepBinding" type="tns:OpalPrepPortType">
+
+    	<soap:binding style="document" transport="http://schemas.xmlsoap.org/soap/http"/>
+    	<wsdl:operation name="prepareNewOpalSimulation">
+
+    		<soap:operation soapAction="http://iaas.uni-stuttgart.de/opalSimulation/opalPrep/prepareNewOpalSimulation"/>
+    		<wsdl:input>
+
+    			<soap:body use="literal"/>
+    		</wsdl:input>
+    	</wsdl:operation>
+    </wsdl:binding>
+    <wsdl:service name="OpalPrepService">
+    	<wsdl:port binding="tns:OpalPrepBinding" name="OpalPrepPort">
+    		<soap:address location="http://0.0.0.0:9080/ode/processes/OpalPrepService"/>
+    	</wsdl:port>
+    </wsdl:service>
+</wsdl:definitions>

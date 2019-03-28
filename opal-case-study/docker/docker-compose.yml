@@ -1,0 +1,155 @@
+version: '3'
+services:
+
+  opalmc:
+    image: trade4chor/trade-opalmc-wrapper
+    environment:
+      - TRADE_URL=http://trade-middleware:8081/api
+    ports:
+      - "8090:8080"
+    networks:
+      - trade
+    depends_on:
+      - trade-middleware
+  
+  opalclus:
+    image: trade4chor/trade-opalclus-wrapper
+    environment:
+      - TRADE_URL=http://trade-middleware:8081/api
+    ports:
+      - "8091:8080"
+    networks:
+      - trade
+    depends_on:
+      - trade-middleware
+  
+  opalxyzr:
+    image: trade4chor/trade-opalxyzr-wrapper
+    environment:
+      - TRADE_URL=http://trade-middleware:8081/api
+    ports:
+      - "8092:8080"
+    networks:
+      - trade
+    depends_on:
+      - trade-middleware
+  
+  trade-middleware:
+    image: trade4chor/trade-core
+    environment:
+      - TRADE_URL=http://trade-middleware:8081/api
+      - HDTApps_URL=http://hdtapps-middleware:8080
+      - PERSISTENCE_MODE=DB
+      - MONGO_DB_URL=mongodb://trade-mongodb:27017
+    ports:
+      - '8081:8081'
+    networks:
+      - trade
+    depends_on:
+      - hdtapps-middleware
+      - trade-mongodb
+
+  trade-mongodb:
+    image: mongo
+    environment:
+      - MONGO_DATA_DIR=/db-data/db
+      - MONGO_LOG_DIR=/db-dev/null
+    ports:
+      - 27018:27017
+    command: mongod --smallfiles --logpath=/dev/null # --quiet
+    networks:
+      - trade     
+  
+  trade-web-ui:
+    image: trade4chor/trade-web-ui
+    environment:
+      - TRADE_URL=http://${HOST_IP}:8081/api
+      - HDT_URL=http://${HOST_IP}:8082
+    ports:
+      - '80:80'
+    networks:
+      - trade
+    depends_on:
+      - trade-middleware
+      - hdtapps-middleware
+
+  # OPTIONAL: Add more ODE instances based on the deployment distribution of choreography participants
+  ode:
+    image: trade4chor/trade-ode
+    environment:
+      - TRADE_URL=http://trade-middleware:8081/api
+      - ACTIVEMQ_URL=tcp://activemq:61616
+    ports:
+      - "9080:8080"
+    networks:
+      - trade
+    depends_on:
+      - trade-middleware
+      - activemq
+  
+  activemq:
+    image: webcenter/activemq
+    ports:
+      - "61616:61616"
+    networks:
+      - trade
+      
+  hdtapps-middleware:
+    image: trade4chor/hdtapps-prototype
+    ports:
+      - "8082:8080"
+    environment:
+      - DOCKER_HOST=http://${HOST_IP}:${DOCKER_PORT}
+      - MONGO_HOST=mongodb
+      - MONGO_PORT=27017
+      - REDIS_HOST=redis
+      - REDIS_PORT=6379
+    networks:
+      - trade
+    depends_on:
+      - mongodb
+      - celery-worker
+      - redis
+  
+  mongodb:
+    image: mongo
+    volumes:
+      - 'mongodata:/data'
+    ports:
+      - '27017:27017'
+    networks:
+      - trade
+  
+  celery-worker:
+    image: trade4chor/hdtapps-prototype
+    command: celery worker -A celery_worker.celery --loglevel=info
+    ports:
+      - "8080:8080"
+    environment:
+      - DOCKER_HOST=http://${HOST_IP}:${DOCKER_PORT}
+      - MONGO_HOST=mongodb
+      - MONGO_PORT=27017
+      - REDIS_HOST=redis
+      - REDIS_PORT=6379
+    depends_on:
+      - mongodb
+      - redis
+    networks:
+      - trade
+  
+  redis:
+    image: 'redis:alpine'
+    volumes:
+      - 'redisdata:/data'
+    ports:
+      - '6379:6379'
+    networks:
+      - trade
+      
+networks:
+  trade:
+    driver: bridge
+    
+volumes:
+  redisdata:
+  mongodata:

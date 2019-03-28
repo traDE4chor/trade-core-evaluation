@@ -1,0 +1,256 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<wsdl:definitions xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/"
+                  xmlns:tns="http://www.uni-stuttgart.de/iaas/serviceWrapper/opalMC/"
+                  xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/" xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+                  name="opalMC" targetNamespace="http://www.uni-stuttgart.de/iaas/serviceWrapper/opalMC/">
+    <wsdl:types>
+        <xsd:schema targetNamespace="http://www.uni-stuttgart.de/iaas/serviceWrapper/opalMC/">
+            <xsd:element name="runOpalMC">
+                <xsd:complexType>
+                    <xsd:sequence>
+                        <xsd:element name="simulationIdentifier"
+                                     type="tns:tSimulationIdentifier"/>
+                        <xsd:element name="replyToCallbackAddress"
+                                     type="xsd:string"/>
+                        <xsd:element name="dataModelRef"
+                                     type="tns:tDataModelReference">
+                        </xsd:element>
+                        <xsd:element name="opalInput"
+                                     type="tns:tDataElementRef">
+                        </xsd:element>
+                        <xsd:element name="opalBccLattice"
+                                     type="tns:tDataElementRef">
+                        </xsd:element>
+                        <xsd:element name="numberOfSnapshots"
+                                     type="xsd:int">
+                        </xsd:element>
+                        <xsd:element name="resultSnapshots"
+                                     type="tns:tDataElementRef">
+                        </xsd:element>
+                        <xsd:element name="resultSaturation"
+                                     type="tns:tDataElementRef">
+                        </xsd:element>
+                        <xsd:element name="resultReport"
+                                     type="tns:tDataElementRef">
+                        </xsd:element>
+                    </xsd:sequence>
+                </xsd:complexType>
+            </xsd:element>
+            <xsd:element name="runOpalMCResponse">
+                <xsd:complexType>
+                    <xsd:sequence>
+                        <xsd:element name="simulationID" type="xsd:string"/>
+                        <xsd:element name="started" type="xsd:boolean"></xsd:element>
+                        <xsd:element name="message" type="xsd:string"></xsd:element>
+                    </xsd:sequence>
+                </xsd:complexType>
+            </xsd:element>
+            <xsd:element name="prepareOpalMCInputs">
+                <xsd:complexType>
+                    <xsd:sequence>
+                        <xsd:element name="simulationIdentifier"
+                                     type="tns:tSimulationIdentifier"/>
+                        <xsd:element name="replyToCallbackAddress"
+                                     type="xsd:string"/>
+                        <xsd:element name="dataModelRef"
+                                     type="tns:tDataModelReference">
+                        </xsd:element>
+                        <xsd:element name="energyConfiguration"
+                                     type="tns:tDataElementRef">
+                        </xsd:element>
+                        <xsd:element name="lx" type="xsd:int">
+                        </xsd:element>
+                        <xsd:element name="ly" type="xsd:int">
+                        </xsd:element>
+                        <xsd:element name="lz" type="xsd:int">
+                        </xsd:element>
+                        <xsd:element name="numberOfSnapshots"
+                                     type="xsd:int">
+                        </xsd:element>
+                        <xsd:element name="snapshotFrequency"
+                                     type="xsd:int">
+                        </xsd:element>
+                        <xsd:element name="checkpointFrequency"
+                                     type="xsd:int">
+                        </xsd:element>
+                        <xsd:element name="resultOpalInput"
+                                     type="tns:tDataElementRef">
+                        </xsd:element>
+                    </xsd:sequence>
+                </xsd:complexType>
+            </xsd:element>
+            <xsd:element name="prepareOpalMCInputsResponse">
+                <xsd:complexType>
+                    <xsd:sequence>
+
+                        <xsd:element name="simulationID"
+                                     type="xsd:string">
+                        </xsd:element>
+                        <xsd:element name="prepared"
+                                     type="xsd:boolean">
+                        </xsd:element>
+                        <xsd:element name="message" type="xsd:string"></xsd:element>
+                    </xsd:sequence>
+                </xsd:complexType>
+            </xsd:element>
+
+            <xsd:complexType name="tDataModelReference">
+                <xsd:sequence>
+                    <xsd:element name="namespaceURI"
+                                 type="xsd:string">
+                    </xsd:element>
+                    <xsd:element name="localName" type="xsd:string"></xsd:element>
+                </xsd:sequence>
+            </xsd:complexType>
+
+            <xsd:complexType name="tSimulationIdentifier">
+                <xsd:sequence>
+                    <xsd:element name="key"
+                                 type="xsd:string">
+                    </xsd:element>
+                    <xsd:element name="value" type="xsd:string"></xsd:element>
+                </xsd:sequence>
+            </xsd:complexType>
+
+            <xsd:complexType name="tDataElementRef">
+                <xsd:sequence>
+                    <xsd:element name="dataObjectName"
+                                 type="xsd:string">
+                    </xsd:element>
+                    <xsd:element name="dataElementName" type="xsd:string"></xsd:element>
+                </xsd:sequence>
+                <xsd:attribute name="isCollectionDataElement" type="xsd:boolean"/>
+            </xsd:complexType>
+
+            <xsd:element name="callback">
+                <xsd:complexType>
+                    <xsd:sequence>
+                        <xsd:element name="simulationIdentifier" type="tns:tSimulationIdentifier" minOccurs="1"
+                                     maxOccurs="1"/>
+                        <xsd:element name="resultDataLinks" type="tns:tResultDataList" minOccurs="0" maxOccurs="1"/>
+                        <xsd:element name="faultMessage" type="xsd:string" minOccurs="0" maxOccurs="1"/>
+                    </xsd:sequence>
+                </xsd:complexType>
+            </xsd:element>
+
+            <xsd:complexType name="tResultDataList">
+                <xsd:sequence>
+                    <xsd:element name="result" type="tns:tResultRef" minOccurs="1" maxOccurs="unbounded"/>
+                </xsd:sequence>
+            </xsd:complexType>
+
+            <xsd:complexType name="tResultRef">
+                <xsd:sequence>
+                    <xsd:element name="dataObjectName" type="xsd:string"/>
+                    <xsd:element name="dataElementName" type="xsd:string"/>
+                    <xsd:element name="linkToDataValue" type="xsd:string"/>
+                    <xsd:element name="directLinkToData" type="xsd:string"/>
+                </xsd:sequence>
+            </xsd:complexType>
+        </xsd:schema>
+    </wsdl:types>
+    <wsdl:message name="runOpalMCRequest">
+        <wsdl:part element="tns:runOpalMC" name="parameters"/>
+    </wsdl:message>
+    <wsdl:message name="runOpalMCResponse">
+        <wsdl:part element="tns:runOpalMCResponse" name="parameters"/>
+    </wsdl:message>
+    <wsdl:message name="prepareOpalMCInputsRequest">
+        <wsdl:part name="parameters" element="tns:prepareOpalMCInputs"></wsdl:part>
+    </wsdl:message>
+    <wsdl:message name="prepareOpalMCInputsResponse">
+        <wsdl:part name="parameters" element="tns:prepareOpalMCInputsResponse"></wsdl:part>
+    </wsdl:message>
+
+    <wsdl:message name="callbackRequest">
+        <wsdl:part element="tns:callback" name="parameters"/>
+    </wsdl:message>
+
+    <wsdl:portType name="opalMC">
+        <wsdl:operation name="runOpalMC">
+            <wsdl:input message="tns:runOpalMCRequest"/>
+            <wsdl:output message="tns:runOpalMCResponse"/>
+        </wsdl:operation>
+        <wsdl:operation name="prepareOpalMCInputs">
+            <wsdl:input message="tns:prepareOpalMCInputsRequest"></wsdl:input>
+            <wsdl:output message="tns:prepareOpalMCInputsResponse"></wsdl:output>
+        </wsdl:operation>
+    </wsdl:portType>
+
+    <wsdl:binding name="opalMCSOAP" type="tns:opalMC">
+        <soap:binding style="document"
+                      transport="http://schemas.xmlsoap.org/soap/http"/>
+        <wsdl:operation name="runOpalMC">
+            <soap:operation
+                    soapAction="http://www.uni-stuttgart.de/iaas/serviceWrapper/opalMC/runOpalMC"/>
+            <wsdl:input>
+                <soap:body use="literal"/>
+            </wsdl:input>
+            <wsdl:output>
+                <soap:body use="literal"/>
+            </wsdl:output>
+        </wsdl:operation>
+        <wsdl:operation name="prepareOpalMCInputs">
+            <soap:operation
+                    soapAction="http://www.uni-stuttgart.de/iaas/serviceWrapper/opalMC/prepareOpalMCInputs"/>
+            <wsdl:input>
+                <soap:body use="literal"/>
+            </wsdl:input>
+            <wsdl:output>
+                <soap:body use="literal"/>
+            </wsdl:output>
+        </wsdl:operation>
+    </wsdl:binding>
+    <wsdl:service name="OpalMCService">
+        <wsdl:port binding="tns:opalMCSOAP" name="OpalMCServicePort">
+            <!-- Embedded Jetty deployment -->
+            <!-- <soap:address location="http://localhost:8080/services/opalMC" /> -->
+            <!-- Tomcat deployment, embedded or standalone -->
+            <soap:address location="http://opalmc:8080/opalMC/services/opalMC"/>
+        </wsdl:port>
+    </wsdl:service>
+
+    <wsdl:portType name="opalMCCallback">
+        <wsdl:operation name="callbackMC">
+            <wsdl:input message="tns:callbackRequest"/>
+        </wsdl:operation>
+    </wsdl:portType>
+    <wsdl:binding name="opalMCCallbackSOAP" type="tns:opalMCCallback">
+        <soap:binding style="document"
+                      transport="http://schemas.xmlsoap.org/soap/http"/>
+        <wsdl:operation name="callbackMC">
+            <soap:operation
+                    soapAction="http://www.uni-stuttgart.de/iaas/serviceWrapper/opalMC/callbackMC"/>
+            <wsdl:input>
+                <soap:body use="literal"/>
+            </wsdl:input>
+        </wsdl:operation>
+    </wsdl:binding>
+    <wsdl:service name="OpalMCCallbackService">
+        <wsdl:port binding="tns:opalMCCallbackSOAP" name="OpalMCCallbackServicePort">
+            <soap:address location="http://ode:8080/ode/processes/opalMC-callback-Service"/>
+        </wsdl:port>
+    </wsdl:service>
+
+    <wsdl:portType name="opalMCPrepareCallback">
+        <wsdl:operation name="callbackPrepare">
+            <wsdl:input message="tns:callbackRequest"/>
+        </wsdl:operation>
+    </wsdl:portType>
+    <wsdl:binding name="opalMCPrepareCallbackSOAP" type="tns:opalMCPrepareCallback">
+        <soap:binding style="document"
+                      transport="http://schemas.xmlsoap.org/soap/http"/>
+        <wsdl:operation name="callbackPrepare">
+            <soap:operation
+                    soapAction="http://www.uni-stuttgart.de/iaas/serviceWrapper/opalMC/callbackPrepare"/>
+            <wsdl:input>
+                <soap:body use="literal"/>
+            </wsdl:input>
+        </wsdl:operation>
+    </wsdl:binding>
+    <wsdl:service name="OpalMCPrepareCallbackService">
+        <wsdl:port binding="tns:opalMCPrepareCallbackSOAP" name="OpalMCPrepareCallbackServicePort">
+            <soap:address location="http://ode:8080/ode/processes/opalMCPrepare-callback-Service"/>
+        </wsdl:port>
+    </wsdl:service>
+</wsdl:definitions>

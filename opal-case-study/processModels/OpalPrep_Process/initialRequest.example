@@ -1,0 +1,14 @@
+<tns:prepareNewOpalSimulation xmlns:tns="http://iaas.uni-stuttgart.de/opalSimulation/opalPrep" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <simulationID>simulation1</simulationID>
+  <numberOfSnapshots>20</numberOfSnapshots>
+  <snapshotFrequency>100000</snapshotFrequency>
+  <checkpointFrequency>10000</checkpointFrequency>
+  <lx>64</lx>
+  <ly>64</ly>
+  <lz>64</lz>
+  <Nb>255</Nb>
+  <Nc>1</Nc>
+  <Nd>1</Nd>
+  <refToLattice>https://www.dropbox.com/s/i61z8qqa1lqqxwk/opalbcc.dat?raw=1</refToLattice>
+  <refToEnergy>https://www.dropbox.com/s/5w7vkusndz55r7w/econf.dat?raw=1</refToEnergy>
+</tns:prepareNewOpalSimulation>

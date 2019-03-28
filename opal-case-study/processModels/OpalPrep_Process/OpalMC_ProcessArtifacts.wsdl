@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<wsdl:definitions xmlns:plnk="http://docs.oasis-open.org/wsbpel/2.0/plnktype" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:tns="http://iaas.uni-stuttgart.de/opalSimulation/opalMC" xmlns:vprop="http://docs.oasis-open.org/wsbpel/2.0/varprop" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/" xmlns:xsd="http://www.w3.org/2001/XMLSchema" name="OpalMC_ProcessArtifacts" targetNamespace="http://iaas.uni-stuttgart.de/opalSimulation/opalMC">
+  <plnk:partnerLinkType name="OpalXYZR_Process-OpalMC_Process-realizedBy-OpalMCCallbackPortType-plt">
+    <plnk:role name="OpalMC_ProcessProvider" portType="tns:OpalMCCallbackPortType"/>
+  </plnk:partnerLinkType>
+  <plnk:partnerLinkType name="OpalPrep_Process-OpalMC_Process-realizedBy-OpalMCPortType-plt">
+    <plnk:role name="OpalMC_ProcessProvider" portType="tns:OpalMCPortType"/>
+  </plnk:partnerLinkType>
+  <wsdl:types>
+    <xsd:schema attributeFormDefault="unqualified" elementFormDefault="qualified" targetNamespace="http://iaas.uni-stuttgart.de/opalSimulation/opalMC">
+      <xsd:element name="message_5-RequestElement" type="tns:tmessage_5-RequestElementType"/>
+      <xsd:complexType name="tmessage_5-RequestElementType">
+        <xsd:sequence>
+          <xsd:element name="simulationID" type="xsd:string"/>
+        </xsd:sequence>
+      </xsd:complexType>
+      <xsd:element name="message_6-RequestElement" type="tns:tmessage_6-RequestElementType"/>
+      <xsd:complexType name="tmessage_6-RequestElementType">
+        <xsd:sequence>
+          <xsd:element name="simulationID" type="xsd:string"/>
+        </xsd:sequence>
+      </xsd:complexType>
+    </xsd:schema>
+  </wsdl:types>
+  <wsdl:message name="message_5">
+    <wsdl:part element="tns:message_5-RequestElement" name="payload"/>
+  </wsdl:message>
+  <wsdl:message name="message_6">
+    <wsdl:part element="tns:message_6-RequestElement" name="payload"/>
+  </wsdl:message>
+  <wsdl:portType name="OpalMCCallbackPortType">
+    <wsdl:operation name="callback">
+      <wsdl:input message="tns:message_5"/>
+    </wsdl:operation>
+  </wsdl:portType>
+  <wsdl:portType name="OpalMCPortType">
+    <wsdl:operation name="runOpalMC">
+      <wsdl:input message="tns:message_6"/>
+    </wsdl:operation>
+  </wsdl:portType>
+  <wsdl:binding name="OpalMC_Process-OpalMCCallbackPortType-Binding" type="tns:OpalMCCallbackPortType">
+    <soap:binding style="document" transport="http://schemas.xmlsoap.org/soap/http"/>
+    <wsdl:operation name="callback">
+      <soap:operation soapAction="http://iaas.uni-stuttgart.de/opalSimulation/opalMC/callback"/>
+      <wsdl:input>
+        <soap:body use="literal"/>
+      </wsdl:input>
+    </wsdl:operation>
+  </wsdl:binding>
+  <wsdl:binding name="OpalMC_Process-OpalMCPortType-Binding" type="tns:OpalMCPortType">
+    <soap:binding style="document" transport="http://schemas.xmlsoap.org/soap/http"/>
+    <wsdl:operation name="runOpalMC">
+      <soap:operation soapAction="http://iaas.uni-stuttgart.de/opalSimulation/opalMC/runOpalMC"/>
+      <wsdl:input>
+        <soap:body use="literal"/>
+      </wsdl:input>
+    </wsdl:operation>
+  </wsdl:binding>
+  <wsdl:service name="OpalMC_Process-OpalMCCallbackPortType-Service">
+    <wsdl:port binding="tns:OpalMC_Process-OpalMCCallbackPortType-Binding" name="OpalMC_Process-OpalMCCallbackPortType-Port">
+      <soap:address location="http://ode:8080/ode/processes/OpalMC_Process-OpalMCCallbackPortType-Service"/>
+    </wsdl:port>
+  </wsdl:service>
+  <wsdl:service name="OpalMC_Process-OpalMCPortType-Service">
+    <wsdl:port binding="tns:OpalMC_Process-OpalMCPortType-Binding" name="OpalMC_Process-OpalMCPortType-Port">
+      <soap:address location="http://ode:8080/ode/processes/OpalMC_Process-OpalMCPortType-Service"/>
+    </wsdl:port>
+  </wsdl:service>
+</wsdl:definitions>

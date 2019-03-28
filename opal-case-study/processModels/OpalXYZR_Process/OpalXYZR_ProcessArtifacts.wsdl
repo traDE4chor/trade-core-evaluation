@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<wsdl:definitions xmlns:plnk="http://docs.oasis-open.org/wsbpel/2.0/plnktype" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:tns="http://iaas.uni-stuttgart.de/opalSimulation/opalXYZR" xmlns:vprop="http://docs.oasis-open.org/wsbpel/2.0/varprop" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/" xmlns:wsdl1="http://www.uni-stuttgart.de/iaas/serviceWrapper/opalXYZR/" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsd1="http://iaas.uni-stuttgart.de/opalSimulation/opalMC" name="OpalXYZR_ProcessArtifacts" targetNamespace="http://iaas.uni-stuttgart.de/opalSimulation/opalXYZR">
+  <plnk:partnerLinkType name="OpalCLUS_Process-OpalXYZR_Process-realizedBy-OpalXYZRPortType-plt">
+    <plnk:role name="OpalXYZR_ProcessProvider" portType="tns:OpalXYZRPortType"/>
+  </plnk:partnerLinkType>
+    <vprop:property name="simulationID" type="xsd:string"/>
+    <plnk:partnerLinkType name="wrapperXyzrPLT">
+    <plnk:role name="wrapper" portType="wsdl1:opalXYZR"/>
+  </plnk:partnerLinkType>
+    <plnk:partnerLinkType name="wrapperCallbackPLT">
+    <plnk:role name="callback" portType="wsdl1:opalXYZRCallback"/>
+  </plnk:partnerLinkType>
+    <vprop:propertyAlias messageType="wsdl1:callbackRequest" part="parameters" propertyName="tns:simulationID">
+    <vprop:query><![CDATA[/simulationIdentifier/value]]></vprop:query>
+  </vprop:propertyAlias>
+    <vprop:propertyAlias messageType="tns:message_4" part="payload" propertyName="tns:simulationID">
+    <vprop:query><![CDATA[/tns:simulationID]]></vprop:query>
+  </vprop:propertyAlias>
+    <vprop:propertyAlias messageType="xsd1:message_5" part="payload" propertyName="tns:simulationID">
+    <vprop:query><![CDATA[/xsd1:simulationID]]></vprop:query>
+  </vprop:propertyAlias>
+    <vprop:propertyAlias messageType="xsd1:message_6" part="payload" propertyName="tns:simulationID">
+    <vprop:query><![CDATA[/xsd1:simulationID]]></vprop:query>
+  </vprop:propertyAlias>
+    <vprop:propertyAlias messageType="wsdl1:runOpalXyzrRequest" part="parameters" propertyName="tns:simulationID">
+    <vprop:query><![CDATA[/simulationIdentifier/value]]></vprop:query>
+  </vprop:propertyAlias>
+    <vprop:propertyAlias messageType="wsdl1:runOpalXyzrResponse" part="parameters" propertyName="tns:simulationID">
+    <vprop:query><![CDATA[/simulationID]]></vprop:query>
+  </vprop:propertyAlias>
+    <wsdl:import location="opalXYZR.wsdl" namespace="http://www.uni-stuttgart.de/iaas/serviceWrapper/opalXYZR/"/>
+    <wsdl:import location="OpalMC_ProcessArtifacts.wsdl" namespace="http://iaas.uni-stuttgart.de/opalSimulation/opalMC"/>
+    <wsdl:types>
+    <xsd:schema attributeFormDefault="unqualified" elementFormDefault="qualified" targetNamespace="http://iaas.uni-stuttgart.de/opalSimulation/opalXYZR">
+      <xsd:element name="message_4-RequestElement" type="tns:tmessage_4-RequestElementType"/>
+      <xsd:complexType name="tmessage_4-RequestElementType">
+        <xsd:sequence>
+          <xsd:element name="simulationID" type="xsd:string"/>
+          <xsd:element name="numberOfSnapshotToProcess" type="xsd:int"/>
+        </xsd:sequence>
+      </xsd:complexType>
+    </xsd:schema>
+  </wsdl:types>
+  <wsdl:message name="message_4">
+    <wsdl:part element="tns:message_4-RequestElement" name="payload"/>
+  </wsdl:message>
+  <wsdl:portType name="OpalXYZRPortType">
+    <wsdl:operation name="calculateClusterPosAndSize">
+      <wsdl:input message="tns:message_4"/>
+    </wsdl:operation>
+  </wsdl:portType>
+  <wsdl:binding name="OpalXYZR_Process-OpalXYZRPortType-Binding" type="tns:OpalXYZRPortType">
+    <soap:binding style="document" transport="http://schemas.xmlsoap.org/soap/http"/>
+    <wsdl:operation name="calculateClusterPosAndSize">
+      <soap:operation soapAction="http://iaas.uni-stuttgart.de/opalSimulation/opalXYZR/calculateClusterPosAndSize"/>
+      <wsdl:input>
+        <soap:body use="literal"/>
+      </wsdl:input>
+    </wsdl:operation>
+  </wsdl:binding>
+  <wsdl:service name="OpalXYZR_Process-OpalXYZRPortType-Service">
+    <wsdl:port binding="tns:OpalXYZR_Process-OpalXYZRPortType-Binding" name="OpalXYZR_Process-OpalXYZRPortType-Port">
+      <soap:address location="http://ode:8080/ode/processes/OpalXYZR_Process-OpalXYZRPortType-Service"/>
+    </wsdl:port>
+  </wsdl:service>
+</wsdl:definitions>

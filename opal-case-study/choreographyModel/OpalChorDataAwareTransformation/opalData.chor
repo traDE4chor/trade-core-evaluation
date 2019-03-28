@@ -1,0 +1,151 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<chor:Choreography xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:chor="urn:HPI_IAAS:choreography:schemas:choreography:2006/12" xmlns:pbd="http://docs.oasis-open.org/wsbpel/2.0/process/abstract" name="OpalSimulationChoreography" targetNamespace="http://iaas.uni-stuttgart.de/opalSimulation/chor">
+  <participants name="OpalMC">
+    <process name="process" targetNamespace="http://iaas.uni-stuttgart.de/opalSimulation/opalMC" abstractProcessProfile="urn:HPI_IAAS:choreography:profile:2006/12">
+      <activity xsi:type="pbd:Sequence" id="91062366-cb10-4368-8ee1-bcf2161bb2f3" name="main">
+        <activity xsi:type="pbd:Invoke" id="0bf0b2af-1e3e-4971-a5ca-b20939695296" name="runOpalMCSimulation"/>
+        <activity xsi:type="pbd:Flow" id="62300c42-3249-4731-afc7-a73ed03a2c37" name="parallel ">
+          <activity xsi:type="pbd:ForEach" id="9ba25df3-17f6-483b-9347-e5dc588b4a8a" name="processAllSnapshots" counterName="Counter">
+            <scope id="0a6c499a-42b2-481a-ade5-d35a83798d9b" name="scope">
+              <activity xsi:type="pbd:Sequence" id="3105e35c-b173-4e98-b5aa-3de250eec65e" name="sequence">
+                <activity xsi:type="pbd:Invoke" id="282ca469-b54b-4ea2-9b94-cf175b64883d" name="invokeClusterCalc"/>
+                <activity xsi:type="pbd:Receive" id="88930d05-9965-41b8-b965-f0d552b23c51" name="receiveCallback"/>
+              </activity>
+            </scope>
+          </activity>
+        </activity>
+        <activity xsi:type="pbd:Receive" id="a0c525f2-a070-40cd-a747-ab7bd6e434f2" name="receiveRequest"/>
+        <activity xsi:type="pbd:Invoke" id="741430de-85b3-40b4-817f-1665609a0130" name="sendSimulationResults"/>
+      </activity>
+    </process>
+  </participants>
+  <participants name="OpalPrep">
+    <process name="process" targetNamespace="http://iaas.uni-stuttgart.de/opalSimulation/opalPrep" abstractProcessProfile="urn:HPI_IAAS:choreography:profile:2006/12">
+      <activity xsi:type="pbd:Sequence" id="6ea183d4-0c21-4073-b511-34b1e2d52125" name="main">
+        <activity xsi:type="pbd:Receive" id="bd5f325d-5e64-4ba3-8af3-48c1ee333a37" name="receiveParameters"/>
+        <activity xsi:type="pbd:Invoke" id="39b1ce14-8d32-45ca-a9b2-4b106dd261df" name="prepareData"/>
+        <activity xsi:type="pbd:Invoke" id="8ab5ef48-ef6e-4a5e-bbf4-c7eb7a86e703" name="invokeOpalMC"/>
+      </activity>
+    </process>
+  </participants>
+  <participants name="OpalCLUS">
+    <process name="process" targetNamespace="http://iaas.uni-stuttgart.de/opalSimulation/opalCLUS" abstractProcessProfile="urn:HPI_IAAS:choreography:profile:2006/12">
+      <activity xsi:type="pbd:Sequence" id="975d384f-8b08-4aa2-9f9a-5c1b5e4a1251" name="main">
+        <activity xsi:type="pbd:Receive" id="ae188894-808e-4029-b422-1b70e9a43b29" name="receiveSnapshots"/>
+        <activity xsi:type="pbd:Invoke" id="04fde6ef-f1c2-4323-88a9-eaafe9c93f76" name="calcClusters"/>
+        <activity xsi:type="pbd:Invoke" id="236d0e21-5017-4b92-b45c-447ca4277fb8" name="invokePosSizeCalc"/>
+      </activity>
+    </process>
+  </participants>
+  <participants name="OpalXYZR">
+    <process name="process" targetNamespace="http://iaas.uni-stuttgart.de/opalSimulation/opalXYZR" abstractProcessProfile="urn:HPI_IAAS:choreography:profile:2006/12">
+      <activity xsi:type="pbd:Sequence" id="d16828bb-fc01-4a74-927b-cf97ba151fa2" name="main">
+        <activity xsi:type="pbd:Receive" id="fc42971d-6c46-4b9c-af0a-0c857ad7c7e5" name="receiveClusters"/>
+        <activity xsi:type="pbd:Invoke" id="3f23e9fa-509e-4ff6-826d-bf3ec085ffb5" name="calcPosSize"/>
+        <activity xsi:type="pbd:Invoke" id="19d44d06-671b-4f33-85bb-33a975a9fe4a" name="callbackOpalMC"/>
+      </activity>
+    </process>
+  </participants>
+  <messageLinks sendActivity="//@participants.0/@process/@activity/@activity.1/@activity.0/@scope/@activity/@activity.0" receiveActivity="//@participants.2/@process/@activity/@activity.0" sender="//@participants.0" receiver="//@participants.2" messageName="message_3" name="invokeClusterCalculation"/>
+  <messageLinks sendActivity="//@participants.2/@process/@activity/@activity.2" receiveActivity="//@participants.3/@process/@activity/@activity.0" sender="//@participants.2" receiver="//@participants.3" messageName="message_4" name="invokePositionAndSizeCalculation"/>
+  <messageLinks sendActivity="//@participants.3/@process/@activity/@activity.2" receiveActivity="//@participants.0/@process/@activity/@activity.1/@activity.0/@scope/@activity/@activity.1" sender="//@participants.3" receiver="//@participants.0" messageName="message_5" name="callbackOpalMC"/>
+  <messageLinks sendActivity="//@participants.1/@process/@activity/@activity.2" receiveActivity="//@participants.0/@process/@activity/@activity.2" sender="//@participants.1" receiver="//@participants.0" messageName="message_6" name="invokeOpalMCSimulation"/>
+  <groundings name="default_grounding">
+    <cMessageLinkGroundings cMessageLink="//@messageLinks.0" operation="identifyClusters">
+      <portType nsURI="http://iaas.uni-stuttgart.de/opalSimulation/opalCLUS" localPart="OpalCLUSPortType" prefix="clus"/>
+    </cMessageLinkGroundings>
+    <cMessageLinkGroundings cMessageLink="//@messageLinks.1" operation="calculateClusterPosAndSize">
+      <portType nsURI="http://iaas.uni-stuttgart.de/opalSimulation/opalXYZR" localPart="OpalXYZRPortType" prefix="xyzr"/>
+    </cMessageLinkGroundings>
+    <cMessageLinkGroundings cMessageLink="//@messageLinks.2" operation="callback">
+      <portType nsURI="http://iaas.uni-stuttgart.de/opalSimulation/opalMC" localPart="OpalMCCallbackPortType" prefix="mc"/>
+    </cMessageLinkGroundings>
+    <cMessageLinkGroundings cMessageLink="//@messageLinks.3" operation="runOpalMC">
+      <portType nsURI="http://iaas.uni-stuttgart.de/opalSimulation/opalMC" localPart="OpalMCPortType" prefix="mc"/>
+    </cMessageLinkGroundings>
+  </groundings>
+  <ChoreographyDataModel name="OpalSimulationChoreography" targetNamespace="http://iaas.uni-stuttgart.de/opalSimulation/chor" identifier="CDM">
+    <dataObjects>
+      <dataObject name="simInput" identifier="bad9e13a-ee40-486c-a967-23a632d83aba" outgoing="//@ChoreographyDataModel/@dataConnectors/@dataConnector.2">
+        <dataElements>
+          <dataElement name="lattice" identifier="800ec4a4-37ae-4c12-b263-6457b50e7806" type="binary" content_type="text/plain" incoming="//@ChoreographyDataModel/@dataConnectors/@dataConnector.11"/>
+          <dataElement name="energy" identifier="b0f22ff5-b8de-4db2-beb2-8f4bdee345fa" type="binary" content_type="text/plain" incoming="//@ChoreographyDataModel/@dataConnectors/@dataConnector.12" outgoing="//@ChoreographyDataModel/@dataConnectors/@dataConnector.15"/>
+          <dataElement name="opal_in" identifier="d04fcb75-e72a-4c48-bbba-78bfc81ec1f7" type="binary" content_type="text/plain" incoming="//@ChoreographyDataModel/@dataConnectors/@dataConnector.0"/>
+        </dataElements>
+      </dataObject>
+      <dataObject name="simResults" identifier="0fc3d647-21e0-4ef9-bc42-896dcfef0070" incoming="//@ChoreographyDataModel/@dataConnectors/@dataConnector.1" outgoing="//@ChoreographyDataModel/@dataConnectors/@dataConnector.9">
+        <dataElements>
+          <dataElement name="snapshots[]" identifier="8d0d464e-0bd3-40aa-a479-f54bbcedb68d" type="binary" content_type="text/plain" collection="true" outgoing="//@ChoreographyDataModel/@dataConnectors/@dataConnector.4 //@ChoreographyDataModel/@dataConnectors/@dataConnector.13"/>
+          <dataElement name="report" identifier="e4e81b47-973d-495a-8c05-a048584acfce" type="binary" content_type="text/plain"/>
+          <dataElement name="saturation" identifier="b541923b-d46f-4e2a-ad92-27d8545cead9" type="binary" content_type="text/plain" outgoing="//@ChoreographyDataModel/@dataConnectors/@dataConnector.14"/>
+        </dataElements>
+      </dataObject>
+      <dataObject name="media" identifier="ec1b436d-f151-4d90-ac0c-c07a68820896">
+        <dataElements>
+          <dataElement name="video" identifier="731bb5d7-fb92-4fcf-9af5-faa614bcd7ad" type="binary" content_type="video/mp4"/>
+          <dataElement name="plot" identifier="099b9e22-ce82-4f08-9d8e-044ca310d196" type="binary" content_type="application/pdf"/>
+        </dataElements>
+      </dataObject>
+      <dataObject name="clusters" identifier="3eb75550-0beb-414b-86b3-947d6b6242f9" incoming="//@ChoreographyDataModel/@dataConnectors/@dataConnector.5" outgoing="//@ChoreographyDataModel/@dataConnectors/@dataConnector.6">
+        <dataElements>
+          <dataElement name="posSizes[]" identifier="d16d3b15-96a1-4f51-97ae-37452de44bce" type="binary" content_type="text/plain" collection="true"/>
+          <dataElement name="clusters[]" identifier="833b2a55-9d95-4197-b0cf-7648666607af" type="binary" content_type="text/plain" collection="true"/>
+        </dataElements>
+      </dataObject>
+      <dataObject name="simParameters" identifier="9b8794db-0673-4a55-ab5b-467b9d306c26" incoming="//@ChoreographyDataModel/@dataConnectors/@dataConnector.8" outgoing="//@ChoreographyDataModel/@dataConnectors/@dataConnector.10 //@ChoreographyDataModel/@dataConnectors/@dataConnector.16 //@ChoreographyDataModel/@dataConnectors/@dataConnector.17">
+        <dataElements>
+          <dataElement name="#snapshots" identifier="d512df4e-4aa4-41f6-87b3-d6272271b237" type="integer" outgoing="//@ChoreographyDataModel/@dataConnectors/@dataConnector.3"/>
+          <dataElement name="snapshotFrequency" identifier="d78fa4eb-8114-4183-86ec-6dd75128774d" type="integer"/>
+          <dataElement name="checkpointFrequency" identifier="8e91b6be-f5b7-4600-b85b-b4e5bf3fd0ad" type="integer"/>
+          <dataElement name="lx" identifier="8a28e18e-b7a8-4bf1-8b60-184c9685e4d6" type="integer"/>
+          <dataElement name="ly" identifier="e01cfc75-5ef1-494b-ae76-5dec1ecda827" type="integer"/>
+          <dataElement name="lz" identifier="aed82167-26cf-459b-8c36-1fb21f2420c4" type="integer"/>
+          <dataElement name="Nb" identifier="28215876-adc7-42be-a128-b221cd4e6763" type="integer"/>
+          <dataElement name="Nc" identifier="4128bf85-4d76-4b9a-9e16-8969d0ecc3dd" type="integer"/>
+          <dataElement name="Nd" identifier="14b686d6-5dee-4caa-a7c3-c839e1ff8a72" type="integer"/>
+        </dataElements>
+      </dataObject>
+      <dataObject name="simulationID" identifier="4b3841f4-02ef-4ff5-a6c4-de8fb3027dde" useDataForCorrelation="true">
+        <dataElements>
+          <dataElement name="simID" identifier="d4597e08-0d31-45d2-b2b3-0878841db859" type="string" content_type=""/>
+        </dataElements>
+      </dataObject>
+      <dataObject name="clusterDetails" identifier="d52a8580-b1df-4292-b480-cc034fdaa935" incoming="//@ChoreographyDataModel/@dataConnectors/@dataConnector.7">
+        <dataElements>
+          <dataElement name="m[]" identifier="61bddae4-8980-49e1-9da8-9abc0e065384" type="binary" content_type="text/plain" collection="true"/>
+          <dataElement name="disrad[]" identifier="0c76f234-d342-42f6-97aa-3a0581b4fce4" type="binary" content_type="text/plain" collection="true"/>
+          <dataElement name="cprec[]" identifier="2b540e1e-c561-4426-b5f4-41eec9764810" type="binary" content_type="text/plain" collection="true"/>
+          <dataElement name="xyzr[]" identifier="ec199978-98b3-4028-8d49-8e3883aaeadf" type="binary" content_type="text/plain" collection="true"/>
+        </dataElements>
+      </dataObject>
+    </dataObjects>
+    <dataConnectors>
+      <dataConnector name="writeOpal_In" identifier="add2c092-2f52-4b12-ada4-b463020b5d1b" source="//@participants.1/@process/@activity/@activity.1" target="//@ChoreographyDataModel/@dataObjects/@dataObject.0/@dataElements/@dataElement.2"/>
+      <dataConnector name="writeSimResults" identifier="e9ca8c49-195d-4227-a0d9-a97e2ce88bc6" source="//@participants.0/@process/@activity/@activity.0" target="//@ChoreographyDataModel/@dataObjects/@dataObject.1"/>
+      <dataConnector name="readSimInput" identifier="26551a2b-a158-455a-a105-b326eb3da208" source="//@ChoreographyDataModel/@dataObjects/@dataObject.0" target="//@participants.0/@process/@activity/@activity.0"/>
+      <dataConnector name="getSnapshotSize" identifier="bf47f826-5e40-4256-a551-193e4c4923d9" source="//@ChoreographyDataModel/@dataObjects/@dataObject.4/@dataElements/@dataElement.0" target="//@participants.0/@process/@activity/@activity.1/@activity.0"/>
+      <dataConnector name="readSnapshots" identifier="cc2d1a48-34c5-4c21-b84e-3f62ec049877" source="//@ChoreographyDataModel/@dataObjects/@dataObject.1/@dataElements/@dataElement.0" target="//@participants.2/@process/@activity/@activity.1"/>
+      <dataConnector name="writeClusters" identifier="49c47850-5cb3-4461-9bf9-2f3b2c9cf9ab" source="//@participants.2/@process/@activity/@activity.1" target="//@ChoreographyDataModel/@dataObjects/@dataObject.3"/>
+      <dataConnector name="readClusters" identifier="7c1dce66-74a1-42b4-8060-5690d6f96d70" source="//@ChoreographyDataModel/@dataObjects/@dataObject.3" target="//@participants.3/@process/@activity/@activity.1"/>
+      <dataConnector name="writePosSizes" identifier="85b97da6-030c-46d7-a922-107df8ab5313" source="//@participants.3/@process/@activity/@activity.1" target="//@ChoreographyDataModel/@dataObjects/@dataObject.6"/>
+      <dataConnector name="storeParameters" identifier="6ec6893c-7fe2-48f0-a392-afe4213d9c76" source="//@participants.1/@process/@activity/@activity.0" target="//@ChoreographyDataModel/@dataObjects/@dataObject.4"/>
+      <dataConnector name="readSimResults" identifier="aae267f3-a04b-4133-94a8-9d85b0974300" source="//@ChoreographyDataModel/@dataObjects/@dataObject.1" target="//@participants.0/@process/@activity/@activity.3"/>
+      <dataConnector name="readParameters" identifier="79a1a730-d4c3-466c-a7dc-6d006911e219" source="//@ChoreographyDataModel/@dataObjects/@dataObject.4" target="//@participants.1/@process/@activity/@activity.1"/>
+      <dataConnector name="writeLattice" identifier="64a57976-5377-4524-aaf6-cc2e84f6aa83" source="//@participants.1/@process/@activity/@activity.0" target="//@ChoreographyDataModel/@dataObjects/@dataObject.0/@dataElements/@dataElement.0"/>
+      <dataConnector name="writeEnergy" identifier="12798603-1b89-4d90-967d-d420d66c9036" source="//@participants.1/@process/@activity/@activity.0" target="//@ChoreographyDataModel/@dataObjects/@dataObject.0/@dataElements/@dataElement.1"/>
+      <dataConnector name="transformAllSnapshots2Video" identifier="fdf547af-4925-4516-a89c-98057fd50151" source="//@ChoreographyDataModel/@dataObjects/@dataObject.1/@dataElements/@dataElement.0" target="//@ChoreographyDataModel/@dataObjects/@dataObject.2/@dataElements/@dataElement.0">
+        <dataTransformation name="opalSnapshot2video" transformerID="simtech.opal.snapshots2video">
+          <parameters>
+            <transformationParameter name="numberOfFilesToAnimate" value="$simResults/snapshots[]/value?size"/>
+          </parameters>
+        </dataTransformation>
+      </dataConnector>
+      <dataConnector name="transformSatData2PDF" identifier="00db1991-2e81-4ee2-bccf-e68c5f352daa" source="//@ChoreographyDataModel/@dataObjects/@dataObject.1/@dataElements/@dataElement.2" target="//@ChoreographyDataModel/@dataObjects/@dataObject.2/@dataElements/@dataElement.1">
+        <dataTransformation name="opalSaturation2PDF" transformerID="simtech.opal.saturation2pdf"/>
+      </dataConnector>
+      <dataConnector name="readEnergy" identifier="665758a6-ad54-4464-b34c-8e90a6bf5904" source="//@ChoreographyDataModel/@dataObjects/@dataObject.0/@dataElements/@dataElement.1" target="//@participants.1/@process/@activity/@activity.1"/>
+      <dataConnector name="getAtoms" identifier="a782cd3d-995c-4aaf-9de8-851e17f5db43" source="//@ChoreographyDataModel/@dataObjects/@dataObject.4" target="//@participants.2/@process/@activity/@activity.1"/>
+      <dataConnector name="getAtoms" identifier="de73e0e8-0b57-4f4c-99a5-4c9ed77e5f4e" source="//@ChoreographyDataModel/@dataObjects/@dataObject.4" target="//@participants.3/@process/@activity/@activity.1"/>
+    </dataConnectors>
+  </ChoreographyDataModel>
+</chor:Choreography>

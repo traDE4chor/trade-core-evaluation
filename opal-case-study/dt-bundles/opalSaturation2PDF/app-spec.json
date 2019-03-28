@@ -1,0 +1,63 @@
+{
+  "appInfo": {
+    "appName": "opalSaturation2PDF",
+    "appVersion": "1.0.0",
+    "appPublisher": "Michael Hahn",
+    "appDesc": "Transformation of saturation data into a 2D plot provided as PDF",
+    "appDevelopers": ["Michael Hahn"],
+    "appLicense": "Apache License 2.0",
+    "tags": [ "opal", "simulation", "saturation"]
+  },
+  "transformations": [
+    {
+      "name": "saturation-to-pdf",
+      "qname": "simtech.opal.saturation2pdf",
+      "inputFiles": [
+        {
+          "inputName": "opalSaturationData",
+          "alias": "$saturationData",
+          "isOptional": false,
+          "requiredPath": "{r}/",
+          "format": "dat"
+        }
+      ],
+      "outputFiles": [
+        {
+          "outputName": "saturationPlot",
+          "alias": "$saturationPlot",
+          "format": "pdf",
+          "accessPath": "{r}/"
+        }
+      ]
+    }
+  ],
+  "dependencies": {
+    "softDeps": [
+      {
+        "depName": "Python3",
+        "alias": "$python3",
+        "depDesc": "Python 3",
+        "depVersion": "3",
+        "commands": ["sudo apt-get update", "sudo apt-get -y install python3"]
+      },
+      {
+        "depName": "gnuplot",
+        "alias": "$gnuplot",
+        "depDesc": "Install Gnuplot for creating a 2D plot",
+        "depVersion": ">4.5",
+        "commands": [
+          "sudo apt-get -y install gnuplot"
+        ]
+      }
+    ]
+  },
+  "invocations": {
+    "invocationsCLI": [
+      {
+        "invName": "opalSaturation2PDF CLI invocation",
+        "invDesc": "Trigger the creation of a 2D plot of the saturation function of the Opal precipitation process",
+        "command": "./plotDoadFile.sh $saturationData"
+      }
+    ]
+  }
+}

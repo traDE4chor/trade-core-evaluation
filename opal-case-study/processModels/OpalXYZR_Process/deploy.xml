@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<deploy xmlns="http://www.apache.org/ode/schemas/dd/2007/03" xmlns:opalMC="http://iaas.uni-stuttgart.de/opalSimulation/opalMC" xmlns:opalXYZR="http://iaas.uni-stuttgart.de/opalSimulation/opalXYZR" xmlns:opalXYZR_1="http://www.uni-stuttgart.de/iaas/serviceWrapper/opalXYZR/">
+  <process name="opalXYZR:OpalXYZR_Process">
+    <metaData>
+      <mdProperty name="version" value="1"/>
+    </metaData>
+    <active>true</active>
+    <retired>false</retired>
+    <process-events generate="all"/>
+    <provide partnerLink="OpalCLUS_Process-OpalXYZR_Process-realizedBy-OpalXYZRPortType-pl">
+      <service name="opalXYZR:OpalXYZR_Process-OpalXYZRPortType-Service" port="OpalXYZR_Process-OpalXYZRPortType-Port"/>
+    </provide>
+    <provide partnerLink="wrapperCallbackPL">
+      <service name="opalXYZR_1:OpalXYZRCallbackService" port="OpalXYZRCallbackServicePort"/>
+    </provide>
+    <invoke partnerLink="OpalXYZR_Process-OpalMC_Process-realizedBy-OpalMCCallbackPortType-pl">
+      <service name="opalMC:OpalMC_Process-OpalMCCallbackPortType-Service" port="OpalMC_Process-OpalMCCallbackPortType-Port"/>
+    </invoke>
+    <invoke partnerLink="wrapperXyzrPL">
+      <service name="opalXYZR_1:OpalXyzrService" port="OpalXyzrServicePort"/>
+    </invoke>
+  </process>
+</deploy>

@@ -1,0 +1,279 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<bpel:process exitOnStandardFault="yes" name="OpalCLUS_Process"
+    targetNamespace="http://iaas.uni-stuttgart.de/opalSimulation/opalCLUS"
+    xmlns:bpel="http://docs.oasis-open.org/wsbpel/2.0/process/executable"
+    xmlns:ns="http://iaas.uni-stuttgart.de/opalSimulation/opalCLUS"
+    xmlns:ns0="http://iaas.uni-stuttgart.de/opalSimulation/opalXYZR"
+    xmlns:trade="http://iaas.uni-stuttgart.de/trade/annotations"
+    xmlns:wsu="http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-wssecurity-utility-1.0.xsd" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:clus="http://www.uni-stuttgart.de/iaas/serviceWrapper/opalCLUS/">
+    <bpel:correlationSets>
+        <bpel:correlationSet name="CorrelationSet" properties="ns:simulationID"></bpel:correlationSet>
+    </bpel:correlationSets>
+    <trade:tradeAssociation>
+        <trade:dataModelRef dataModelName="OpalSimulationChoreography" dataModelNamespace="http://iaas.uni-stuttgart.de/opalSimulation/chor"/>
+    </trade:tradeAssociation>
+    <bpel:import namespace="http://www.uni-stuttgart.de/iaas/serviceWrapper/opalCLUS/" location="opalCLUS.wsdl" importType="http://schemas.xmlsoap.org/wsdl/"></bpel:import>
+    <bpel:import importType="http://schemas.xmlsoap.org/wsdl/"
+        location="OpalCLUS_ProcessArtifacts.wsdl" namespace="http://iaas.uni-stuttgart.de/opalSimulation/opalCLUS"/>
+    <bpel:import importType="http://schemas.xmlsoap.org/wsdl/"
+        location="OpalXYZR_ProcessArtifacts.wsdl" namespace="http://iaas.uni-stuttgart.de/opalSimulation/opalXYZR"/>
+    <bpel:partnerLinks>
+        <bpel:partnerLink myRole="OpalCLUS_ProcessProvider"
+            name="OpalMC_Process-OpalCLUS_Process-realizedBy-OpalCLUSPortType-pl" partnerLinkType="ns:OpalMC_Process-OpalCLUS_Process-realizedBy-OpalCLUSPortType-plt"/>
+        <bpel:partnerLink
+            name="OpalCLUS_Process-OpalXYZR_Process-realizedBy-OpalXYZRPortType-pl"
+            partnerLinkType="ns0:OpalCLUS_Process-OpalXYZR_Process-realizedBy-OpalXYZRPortType-plt" partnerRole="OpalXYZR_ProcessProvider"/>
+        <bpel:partnerLink name="wrapperClusPL" partnerLinkType="ns:wrapperClusPLT" partnerRole="wrapper"></bpel:partnerLink>
+        <bpel:partnerLink name="wrapperCallbackPL" partnerLinkType="ns:wrapperCallbackPLT" myRole="callback"></bpel:partnerLink>
+    </bpel:partnerLinks>
+    <bpel:variables>
+        <bpel:variable name="snapshotsArray" type="xsd:byte">
+            <trade:tradeAssociation>
+                <trade:dataObjectRef correlationSet="CorrelationSet"
+                    dataElementName="snapshots[]" dataObjectName="simResults"/>
+            </trade:tradeAssociation>
+        </bpel:variable>
+        <bpel:variable name="clustersArray" type="xsd:byte">
+            <trade:tradeAssociation>
+                <trade:dataObjectRef correlationSet="CorrelationSet"
+                    dataElementName="clusters[]" dataObjectName="clusters"/>
+            </trade:tradeAssociation>
+        </bpel:variable>
+        <bpel:variable name="posSizesArray" type="xsd:byte">
+            <trade:tradeAssociation>
+                <trade:dataObjectRef correlationSet="CorrelationSet"
+                    dataElementName="posSizes[]" dataObjectName="clusters"/>
+            </trade:tradeAssociation>
+        </bpel:variable>
+        <bpel:variable name="numberOfSnapshots" type="xsd:integer">
+            <trade:tradeAssociation>
+                <trade:dataObjectRef correlationSet="CorrelationSet"
+                    dataElementName="#snapshots" dataObjectName="simParameters"/>
+            </trade:tradeAssociation>
+        </bpel:variable>
+        <bpel:variable name="snapshotFrequency" type="xsd:integer">
+            <trade:tradeAssociation>
+                <trade:dataObjectRef correlationSet="CorrelationSet"
+                    dataElementName="snapshotFrequency" dataObjectName="simParameters"/>
+            </trade:tradeAssociation>
+        </bpel:variable>
+        <bpel:variable name="checkpointFrequency" type="xsd:integer">
+            <trade:tradeAssociation>
+                <trade:dataObjectRef correlationSet="CorrelationSet"
+                    dataElementName="checkpointFrequency" dataObjectName="simParameters"/>
+            </trade:tradeAssociation>
+        </bpel:variable>
+        <bpel:variable name="lx" type="xsd:integer">
+            <trade:tradeAssociation>
+                <trade:dataObjectRef correlationSet="CorrelationSet"
+                    dataElementName="lx" dataObjectName="simParameters"/>
+            </trade:tradeAssociation>
+        </bpel:variable>
+        <bpel:variable name="ly" type="xsd:integer">
+            <trade:tradeAssociation>
+                <trade:dataObjectRef correlationSet="CorrelationSet"
+                    dataElementName="ly" dataObjectName="simParameters"/>
+            </trade:tradeAssociation>
+        </bpel:variable>
+        <bpel:variable name="lz" type="xsd:integer">
+            <trade:tradeAssociation>
+                <trade:dataObjectRef correlationSet="CorrelationSet"
+                    dataElementName="lz" dataObjectName="simParameters"/>
+            </trade:tradeAssociation>
+        </bpel:variable>
+        <bpel:variable name="Nb" type="xsd:integer">
+            <trade:tradeAssociation>
+                <trade:dataObjectRef correlationSet="CorrelationSet"
+                    dataElementName="Nb" dataObjectName="simParameters"/>
+            </trade:tradeAssociation>
+        </bpel:variable>
+        <bpel:variable name="Nc" type="xsd:integer">
+            <trade:tradeAssociation>
+                <trade:dataObjectRef correlationSet="CorrelationSet"
+                    dataElementName="Nc" dataObjectName="simParameters"/>
+            </trade:tradeAssociation>
+        </bpel:variable>
+        <bpel:variable name="Nd" type="xsd:integer">
+            <trade:tradeAssociation>
+                <trade:dataObjectRef correlationSet="CorrelationSet"
+                    dataElementName="Nd" dataObjectName="simParameters"/>
+            </trade:tradeAssociation>
+        </bpel:variable>
+        <bpel:variable messageType="ns:message_3" name="message_3-InputVariable"/>
+        <bpel:variable messageType="ns0:message_4" name="message_4-InputVariable"/>
+        <bpel:variable name="simulationID" type="xsd:string"></bpel:variable>
+        <bpel:variable name="opalMcProcessCallback" type="xsd:string"></bpel:variable>
+        <bpel:variable name="numberOfSnapshotToProcess" type="xsd:int"></bpel:variable>
+        <bpel:variable name="wrapperClusPLResponse" messageType="clus:runOpalClusResponse"></bpel:variable>
+        <bpel:variable name="wrapperClusPLRequest" messageType="clus:runOpalClusRequest"></bpel:variable>
+        <bpel:variable name="wrapperCallbackPLRequest" messageType="clus:callbackRequest"></bpel:variable>
+    </bpel:variables>
+    <bpel:sequence name="main">
+        <bpel:receive name="receiveSnapshot"
+            operation="identifyClusters"
+            partnerLink="OpalMC_Process-OpalCLUS_Process-realizedBy-OpalCLUSPortType-pl"
+            portType="ns:OpalCLUSPortType" variable="message_3-InputVariable" createInstance="yes">
+            <bpel:correlations>
+                <bpel:correlation set="CorrelationSet" initiate="yes"></bpel:correlation>
+            </bpel:correlations>
+        </bpel:receive>
+        <bpel:assign validate="no" name="storeParameters">
+            <bpel:copy>
+                <bpel:from part="payload" variable="message_3-InputVariable">
+                    <bpel:query queryLanguage="urn:oasis:names:tc:wsbpel:2.0:sublang:xpath1.0">
+                        <![CDATA[ns:simulationID]]>
+                    </bpel:query>
+                </bpel:from>
+                <bpel:to variable="simulationID"></bpel:to>
+            </bpel:copy>
+            <bpel:copy>
+                <bpel:from part="payload" variable="message_3-InputVariable">
+                    <bpel:query queryLanguage="urn:oasis:names:tc:wsbpel:2.0:sublang:xpath1.0">
+                        <![CDATA[ns:opalMcProcessCallbackAddress]]>
+                    </bpel:query>
+                </bpel:from>
+                <bpel:to variable="opalMcProcessCallback"></bpel:to>
+            </bpel:copy>
+            <bpel:copy>
+                <bpel:from part="payload" variable="message_3-InputVariable">
+                    <bpel:query queryLanguage="urn:oasis:names:tc:wsbpel:2.0:sublang:xpath1.0">
+                        <![CDATA[ns:numberOfSnapshotToProcess]]>
+                    </bpel:query>
+                </bpel:from>
+                <bpel:to variable="numberOfSnapshotToProcess"></bpel:to>
+            </bpel:copy>
+        </bpel:assign>
+        <bpel:assign validate="no" name="prepareOpalClusRequest">
+            <bpel:copy>
+                <bpel:from><bpel:literal xml:space="preserve"><tns:runOpalClus xmlns:tns="http://www.uni-stuttgart.de/iaas/serviceWrapper/opalCLUS/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <simulationIdentifier>
+    <key>simulationID</key>
+    <value>value</value>
+  </simulationIdentifier>
+  <replyToCallbackAddress>replyToCallbackAddress</replyToCallbackAddress>
+  <dataModelRef>
+    <namespaceURI>http://iaas.uni-stuttgart.de/opalSimulation/chor</namespaceURI>
+    <localName>OpalSimulationChoreography</localName>
+  </dataModelRef>
+  <snapshotsDataElement isCollectionDataElement="true">
+    <dataObjectName>simResults</dataObjectName>
+    <dataElementName>snapshots[]</dataElementName>
+  </snapshotsDataElement>
+  <numberOfSnapshotToProcess>0</numberOfSnapshotToProcess>
+  <lx>0</lx>
+  <ly>0</ly>
+  <lz>0</lz>
+  <Nb>0</Nb>
+  <Nc>0</Nc>
+  <Nd>0</Nd>
+  <resultClustersDataElement isCollectionDataElement="true">
+    <dataObjectName>clusters</dataObjectName>
+    <dataElementName>clusters[]</dataElementName>
+  </resultClustersDataElement>
+  <resultClusterPositionsDataElement isCollectionDataElement="true">
+    <dataObjectName>clusters</dataObjectName>
+    <dataElementName>posSizes[]</dataElementName>
+  </resultClusterPositionsDataElement>
+</tns:runOpalClus></bpel:literal></bpel:from>
+                <bpel:to variable="wrapperClusPLRequest" part="parameters"></bpel:to>
+            </bpel:copy>
+            
+            <bpel:copy>
+                <bpel:from part="payload" variable="message_3-InputVariable">
+                    <bpel:query queryLanguage="urn:oasis:names:tc:wsbpel:2.0:sublang:xpath1.0"><![CDATA[ns:simulationID]]></bpel:query>
+                </bpel:from>
+                <bpel:to part="parameters" variable="wrapperClusPLRequest">
+                    <bpel:query queryLanguage="urn:oasis:names:tc:wsbpel:2.0:sublang:xpath1.0"><![CDATA[simulationIdentifier/value]]></bpel:query>
+                </bpel:to>
+            </bpel:copy>
+            <bpel:copy>
+                <bpel:from partnerLink="wrapperCallbackPL" endpointReference="myRole"></bpel:from>
+                <bpel:to part="parameters" variable="wrapperClusPLRequest">
+                    <bpel:query queryLanguage="urn:oasis:names:tc:wsbpel:2.0:sublang:xpath1.0"><![CDATA[replyToCallbackAddress]]></bpel:query>
+                </bpel:to>
+            </bpel:copy>
+            <bpel:copy>
+                <bpel:from variable="numberOfSnapshotToProcess"></bpel:from>
+                <bpel:to part="parameters" variable="wrapperClusPLRequest">
+                    <bpel:query queryLanguage="urn:oasis:names:tc:wsbpel:2.0:sublang:xpath1.0"><![CDATA[numberOfSnapshotToProcess]]></bpel:query>
+                </bpel:to>
+            </bpel:copy>
+            <bpel:copy>
+                <bpel:from variable="lx"></bpel:from>
+                <bpel:to part="parameters" variable="wrapperClusPLRequest">
+                    <bpel:query queryLanguage="urn:oasis:names:tc:wsbpel:2.0:sublang:xpath1.0"><![CDATA[lx]]></bpel:query>
+                </bpel:to>
+            </bpel:copy>
+            <bpel:copy>
+                <bpel:from variable="ly"></bpel:from>
+                <bpel:to part="parameters" variable="wrapperClusPLRequest">
+                    <bpel:query queryLanguage="urn:oasis:names:tc:wsbpel:2.0:sublang:xpath1.0"><![CDATA[ly]]></bpel:query>
+                </bpel:to>
+            </bpel:copy>
+            <bpel:copy>
+                <bpel:from variable="lz"></bpel:from>
+                <bpel:to part="parameters" variable="wrapperClusPLRequest">
+                    <bpel:query queryLanguage="urn:oasis:names:tc:wsbpel:2.0:sublang:xpath1.0"><![CDATA[lz]]></bpel:query>
+                </bpel:to>
+            </bpel:copy>
+            <bpel:copy>
+                <bpel:from variable="Nb"></bpel:from>
+                <bpel:to part="parameters" variable="wrapperClusPLRequest">
+                    <bpel:query queryLanguage="urn:oasis:names:tc:wsbpel:2.0:sublang:xpath1.0"><![CDATA[Nb]]></bpel:query>
+                </bpel:to>
+            </bpel:copy>
+            <bpel:copy>
+                <bpel:from variable="Nc"></bpel:from>
+                <bpel:to part="parameters" variable="wrapperClusPLRequest">
+                    <bpel:query queryLanguage="urn:oasis:names:tc:wsbpel:2.0:sublang:xpath1.0"><![CDATA[Nc]]></bpel:query>
+                </bpel:to>
+            </bpel:copy>
+            <bpel:copy>
+                <bpel:from variable="Nd"></bpel:from>
+                <bpel:to part="parameters" variable="wrapperClusPLRequest">
+                    <bpel:query queryLanguage="urn:oasis:names:tc:wsbpel:2.0:sublang:xpath1.0"><![CDATA[Nd]]></bpel:query>
+                </bpel:to>
+            </bpel:copy>
+        </bpel:assign>
+        <bpel:invoke name="calcClusters" partnerLink="wrapperClusPL" operation="runOpalCLUS" inputVariable="wrapperClusPLRequest" outputVariable="wrapperClusPLResponse">
+            <bpel:correlations>
+                <bpel:correlation set="CorrelationSet" initiate="no" pattern="request-response"></bpel:correlation>
+            </bpel:correlations>
+        </bpel:invoke>
+        <bpel:receive name="waitForCompletion" partnerLink="wrapperCallbackPL" operation="callbackCLUS" variable="wrapperCallbackPLRequest">
+            <bpel:correlations>
+                <bpel:correlation set="CorrelationSet" initiate="no"></bpel:correlation>
+            </bpel:correlations>
+        </bpel:receive>
+        <bpel:assign validate="no" name="prepareOpalXyzrProcessRequest">
+            <bpel:copy>
+                <bpel:from><bpel:literal><tns:message_4-RequestElement xmlns:tns="http://iaas.uni-stuttgart.de/opalSimulation/opalXYZR" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <tns:simulationID>tns:simulationID</tns:simulationID>
+  <tns:numberOfSnapshotToProcess>0</tns:numberOfSnapshotToProcess>
+</tns:message_4-RequestElement>
+</bpel:literal></bpel:from>
+                <bpel:to variable="message_4-InputVariable" part="payload"></bpel:to>
+            </bpel:copy>
+            <bpel:copy>
+                <bpel:from variable="simulationID"></bpel:from>
+                <bpel:to part="payload" variable="message_4-InputVariable">
+                    <bpel:query queryLanguage="urn:oasis:names:tc:wsbpel:2.0:sublang:xpath1.0"><![CDATA[ns0:simulationID]]></bpel:query>
+                </bpel:to>
+            </bpel:copy>
+            <bpel:copy>
+                <bpel:from variable="numberOfSnapshotToProcess"></bpel:from>
+                <bpel:to part="payload" variable="message_4-InputVariable">
+                    <bpel:query queryLanguage="urn:oasis:names:tc:wsbpel:2.0:sublang:xpath1.0"><![CDATA[ns0:numberOfSnapshotToProcess]]></bpel:query>
+                </bpel:to>
+            </bpel:copy>
+        </bpel:assign>
+        <bpel:invoke inputVariable="message_4-InputVariable"
+            name="invokePosSizeCalc"
+            operation="calculateClusterPosAndSize"
+            partnerLink="OpalCLUS_Process-OpalXYZR_Process-realizedBy-OpalXYZRPortType-pl" portType="ns0:OpalXYZRPortType">
+            <bpel:correlations>
+                <bpel:correlation set="CorrelationSet" initiate="no"></bpel:correlation>
+            </bpel:correlations>
+        </bpel:invoke>
+    </bpel:sequence>
+</bpel:process>

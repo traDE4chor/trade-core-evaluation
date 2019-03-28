@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<deploy xmlns="http://www.apache.org/ode/schemas/dd/2007/03" xmlns:opalCLUS="http://iaas.uni-stuttgart.de/opalSimulation/opalCLUS" xmlns:opalMC="http://iaas.uni-stuttgart.de/opalSimulation/opalMC" xmlns:opalMC_1="http://www.uni-stuttgart.de/iaas/serviceWrapper/opalMC/">
+  <process name="opalMC:OpalMC_Process">
+    <metaData>
+      <mdProperty name="version" value="1"/>
+    </metaData>
+    <active>true</active>
+    <retired>false</retired>
+    <process-events generate="all"/>
+    <provide partnerLink="OpalPrep_Process-OpalMC_Process-realizedBy-OpalMCPortType-pl">
+      <service name="opalMC:OpalMC_Process-OpalMCPortType-Service" port="OpalMC_Process-OpalMCPortType-Port"/>
+    </provide>
+    <provide partnerLink="wrapperCallbackPL">
+      <service name="opalMC_1:OpalMCCallbackService" port="OpalMCCallbackServicePort"/>
+    </provide>
+    <provide partnerLink="OpalXYZR_Process-OpalMC_Process-realizedBy-OpalMCCallbackPortType-pl">
+      <service name="opalMC:OpalMC_Process-OpalMCCallbackPortType-Service" port="OpalMC_Process-OpalMCCallbackPortType-Port"/>
+    </provide>
+    <invoke partnerLink="wrapperMcPL">
+      <service name="opalMC_1:OpalMCService" port="OpalMCServicePort"/>
+    </invoke>
+    <invoke partnerLink="OpalMC_Process-OpalCLUS_Process-realizedBy-OpalCLUSPortType-pl">
+      <service name="opalCLUS:OpalCLUS_Process-OpalCLUSPortType-Service" port="OpalCLUS_Process-OpalCLUSPortType-Port"/>
+    </invoke>
+  </process>
+</deploy>
