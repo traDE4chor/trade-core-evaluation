@@ -50,13 +50,11 @@ services:
       - trade-mongodb
 
   trade-mongodb:
-    image: mongo
-    environment:
-      - MONGO_DATA_DIR=/db-data/db
-      - MONGO_LOG_DIR=/db-dev/null
+    image: mongo:3.3
+    volumes:
+      - 'tradedata:/data'
     ports:
       - 27018:27017
-    command: mongod --smallfiles --logpath=/dev/null # --quiet
     networks:
       - trade     
   
@@ -112,7 +110,7 @@ services:
       - redis
   
   mongodb:
-    image: mongo
+    image: mongo:3.3
     volumes:
       - 'mongodata:/data'
     ports:
@@ -153,3 +151,5 @@ networks:
 volumes:
   redisdata:
   mongodata:
+  tradedata:
+
